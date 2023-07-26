@@ -1,0 +1,255 @@
+<template>
+     <div>
+        <div>
+            <h-form ref="invester" :model="invester" :rules="rule_invester" :label-width="100" inline>
+                <h-form-item prop="cer_number" label="投资人查询">
+                    <h-input
+                        v-model="invester.cer_number"
+                        size="large"
+                        icon="close"
+                        placeholder="请输入当前投资人证件号码"
+                        style="width: 60vh;"
+                        @on-click="onclick"
+                    ></h-input>
+                    <h-button type="primary" @click="handleSubmit('invester')">查询</h-button>
+                </h-form-item>
+                <h-form-item prop="user_name" label="投资人名称">
+                    <h-input
+                        v-model="invester.user_name"
+                        :readonly="true"
+                        size="large"
+                        style="width: 60vh;"
+                    ></h-input>
+                </h-form-item>
+                <h-form-item prop="user_type" label="投资人类型">
+                    <h-input
+                        v-model="invester.user_type"
+                        :readonly="true"
+                        size="large"
+                        style="width: 60vh;"
+                    ></h-input>
+                </h-form-item>
+                <h-form-item prop="cer_type" label="投资人证件类型">
+                    <h-input
+                        v-model="invester.cer_type"
+                        :readonly="true"
+                        size="large"
+                        style="width: 60vh;"
+                    ></h-input>
+                </h-form-item>
+                <h-form-item prop="risk_grade" label="投资人风险等级">
+                    <h-input
+                        v-model="invester.risk_grade"
+                        :readonly="true"
+                        size="large"
+                        style="width: 60vh;"
+                    ></h-input>
+                </h-form-item>
+                <h-form-item prop="bank_card" label="银行卡选择">
+                    <h-select v-model="invester.bank_card" style="width: 60vh;">
+                        <h-option
+                            v-for="item in invester.bank_card_List"
+                            :value="item.value"
+                            :key="item.value"
+                        >{{ item.label }}</h-option>
+                    </h-select>
+                    <!--span class="demo-data">{{ invester.bank_card }}</span-->
+                </h-form-item>
+            </h-form>
+            <h-form ref="bank_card" :model="bank_card" :label-width="100" inline>
+                <h-form-item prop="bank_name" label="银行名称">
+                    <h-input
+                        v-model="bank_card.bank_name"
+                        :readonly="true"
+                        size="large"
+                        style="width: 60vh;"
+                    ></h-input>
+                </h-form-item>
+                <h-form-item prop="card_balance" label="余额">
+                    <h-input
+                        v-model="bank_card.card_balance"
+                        :readonly="true"
+                        size="large"
+                        style="width: 60vh;"
+                    ></h-input>
+                </h-form-item>
+            </h-form>
+            <h-form ref="fund_product" :model="fund_product" :rules="rule_fund_product" :label-width="100" inline>
+                <h-form-item prop="fund_number" label="基金代码">
+                    <h-input
+                        v-model="fund_product.fund_number"
+                        size="large"
+                        icon="close"
+                        placeholder="请输入当前基金产品代码"
+                        style="width: 60vh;"
+                        @on-click="onclick"
+                    ></h-input>
+                    <h-button type="primary" @click="handleSubmit('fund_product')">查询</h-button>
+                </h-form-item>
+                <h-form-item prop="fund_name" label="基金名称">
+                    <h-input
+                        v-model="fund_product.fund_name"
+                        :readonly="true"
+                        size="large"
+                        style="width: 60vh;"
+                    ></h-input>
+                </h-form-item>
+                <h-form-item prop="fund_type" label="基金类型">
+                    <h-input
+                        v-model="fund_product.fund_type"
+                        :readonly="true"
+                        size="large"
+                        style="width: 60vh;"
+                    ></h-input>
+                </h-form-item>
+                <h-form-item prop="fund_risk" label="基金风险等级">
+                    <h-input
+                        v-model="fund_product.fund_risk"
+                        :readonly="true"
+                        size="large"
+                        style="width: 60vh;"
+                    ></h-input>
+                </h-form-item>
+            </h-form>
+        </div>
+        <br><br>
+        <h-table :columns="columns1" :data="data1"></h-table>
+        <div id="page-divider">
+            <h-page :total="20"></h-page>
+        </div>
+    </div>
+</template>
+<script>
+export default {
+    data() {
+        return {
+            columns1: [
+                {
+                    title: "产品代码",
+                    key: "productId",
+                },
+                {
+                    title: "产品名称",
+                    key: "productName",
+                },
+                {
+                    title: "产品类型",
+                    key: "productType",
+                },
+                {
+                    title: "产品状态",
+                    key: "productState",
+                },
+                {
+                    title: "证件大类",
+                    key: "idType",
+                },
+                {
+                    title: "操作"
+                }
+            ],
+            data1: [
+                {
+                    name: "王小明",
+                    age: 18,
+                    address: "北京市朝阳区芍药居",
+                },
+                {
+                    name: "张小刚",
+                    age: 25,
+                    address: "北京市海淀区西二旗",
+                },
+                {
+                    name: "李小红",
+                    age: 30,
+                    address: "上海市浦东新区世纪大道",
+                },
+                {
+                    name: "周小伟",
+                    age: 26,
+                    address: "深圳市南山区深南大道",
+                },
+            ],
+            invester: {
+                cer_number: "",
+                user_name: "",
+                user_type: "",
+                cer_type: "",
+                risk_grade: "",
+                bank_card: "",
+                bank_card_List: [
+                    {
+                        value: "beijing",
+                        label: "北京市",
+                    },
+                    {
+                        value: "shanghai",
+                        label: "上海市",
+                    },
+                    {
+                        value: "shenzhen",
+                        label: "深圳市",
+                    },
+                    {
+                        value: "hangzhou",
+                        label: "杭州市",
+                    },
+                ],
+            },
+            rule_invester: {
+                cer_number: [
+                { required: true, message: "请填写投资人证件号码", trigger: "blur" },
+                {
+                    type: "string",
+                    min: 18,
+                    message: "身份证号长度不能小于18位",
+                    trigger: "blur",
+                },
+                {
+                    type: "string",
+                    max: 18,
+                    message: "身份证号长度不能大于18位",
+                    trigger: "blur",
+                },
+                ],
+            },
+            bank_card: {
+                bank_name: "",
+                card_balance: "",
+            },
+            fund_product: {
+                fund_number: "",
+                fund_name: "",
+                fund_type: "",
+                fund_risk: "",
+            },
+            rule_fund_product: {
+                fund_number: [
+                    { required: true, message: "请填写投资人证件号码", trigger: "blur" },
+                ],
+            },
+        };
+    },
+    methods: {
+        onclick() {
+            this.$hMessage.info("icon点击事件");
+        },
+        handleSubmit(name) {
+            this.$refs[name].validate((valid) => {
+                if (valid) {
+                this.$hMessage.success("提交成功!");
+                } else {
+                this.$hMessage.error("表单验证失败!");
+                }
+            });
+        },
+    },
+};
+</script>
+<style scoped>
+#page-divider {
+    margin-right: 0px;
+    padding-right: 0;
+    padding-left: 100px;
+}
+</style>
