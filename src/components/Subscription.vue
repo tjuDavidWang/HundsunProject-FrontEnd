@@ -1,5 +1,6 @@
 <template>
      <div>
+        <br><br>
         <div>
             <h-form ref="invester" :model="invester" :rules="rule_invester" :label-width="100" inline>
                 <h-form-item prop="cer_number" label="投资人查询">
@@ -8,7 +9,7 @@
                         size="large"
                         icon="close"
                         placeholder="请输入当前投资人证件号码"
-                        style="width: 60vh;"
+                        style="width: 100vh;"
                         @on-click="onclick"
                     ></h-input>
                     <h-button type="primary" @click="handleSubmit('invester')">查询</h-button>
@@ -81,7 +82,7 @@
                         size="large"
                         icon="close"
                         placeholder="请输入当前基金产品代码"
-                        style="width: 60vh;"
+                        style="width: 100vh;"
                         @on-click="onclick"
                     ></h-input>
                     <h-button type="primary" @click="handleSubmit('fund_product')">查询</h-button>
@@ -109,6 +110,19 @@
                         size="large"
                         style="width: 60vh;"
                     ></h-input>
+                </h-form-item>
+            </h-form>
+            <h-form ref="subcription" :model="subcription" :rules="rule_subcription" :label-width="100" inline>
+                <h-form-item prop="sub_amount" label="申购金额">
+                    <h-input
+                        v-model="subcription.sub_amount"
+                        size="large"
+                        icon="close"
+                        placeholder="请输入当前银行卡对基金产品的认购金额"
+                        style="width: 100vh;"
+                        @on-click="onclick"
+                    ></h-input>
+                    <h-button type="primary" @click="handleSubmit('subcription')">查询</h-button>
                 </h-form-item>
             </h-form>
         </div>
@@ -225,7 +239,15 @@ export default {
             },
             rule_fund_product: {
                 fund_number: [
-                    { required: true, message: "请填写投资人证件号码", trigger: "blur" },
+                    { required: true, message: "请填写基金产品代码", trigger: "blur" },
+                ],
+            },
+            subcription: {
+                sub_amount: "",
+            },
+            rule_subcription: {
+                sub_amount: [
+                    { required: true, message: "请填写认购金额", trigger: "blur" },
                 ],
             },
         };
