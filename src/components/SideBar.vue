@@ -1,8 +1,7 @@
 <!--SideBar.vue-->
 <template>
     <div id="side-bar">
-        <h-menu theme="dark" active-name="1" :open-names="['1']" :collapse="isCollapse === 'true'" accordion height="auto"
-            width="auto">
+        <h-menu theme="dark" height="auto" open-names="['1','2','3']" width="auto" :collapse="isCollapse === 'true'" accordion >
             <router-link to="/homepage">
                 <h-menu-item name="0"><h-icon name="homepage"></h-icon>首页</h-menu-item>
             </router-link>
@@ -57,8 +56,8 @@ export default {
 </script>
 <style>
 #side-bar {
-    background: rgb(28,35,47);
-    background: linear-gradient(180deg, rgba(28,35,47,1) 0%, rgba(28,35,47,1) 41%, rgba(42,48,122,1) 100%);
+    background: rgb(28, 35, 47);
+    background: linear-gradient(180deg, rgba(28, 35, 47, 1) 0%, rgba(28, 35, 47, 1) 41%, rgba(42, 48, 122, 1) 100%);
     height: 100vh;
 }
 </style>
