@@ -1,3 +1,4 @@
+<!--index.vue-->
 <template>
   <div>
     <div class="layout">
@@ -5,18 +6,14 @@
         <h-col span="5" class="layout-menu-left">
           <SideBar />
         </h-col>
-        <h-col span="19" id="left-side">
+        <h-col span="19" class="right-side">
           <div class="layout-header"></div>
           <div class="layout-content">
-            <h-button type="primary">新增</h-button>
-            <br><br>
             <div class="layout-content-main">
-              <Table />
+              <router-view />
             </div>
           </div>
-          <div class="layout-copy">
-            2017-2030 &copy; HUNDSUN
-          </div>
+
         </h-col>
       </h-row>
     </div>
@@ -24,7 +21,6 @@
 </template>
 <script>
 import SideBar from '../components/SideBar.vue';
-import Table from '../components/Table.vue'
 export default {
   data() {
     return {
@@ -33,17 +29,16 @@ export default {
   },
   components: {
     SideBar,
-    Table
   }
 };
 </script>
 <style>
-#right-side {
-  background-color: black;
-}
-
-#left-side {
-  padding-top: 3%;
-  padding-right: 20%;
+.right-side {
+  background: rgb(255, 255, 255);
+  background: -moz-linear-gradient(185deg, rgba(255, 255, 255, 1) 0%, rgba(199, 219, 255, 1) 100%);
+  background: -webkit-linear-gradient(185deg, rgba(255, 255, 255, 1) 0%, rgba(199, 219, 255, 1) 100%);
+  background: linear-gradient(185deg, rgba(255, 255, 255, 1) 0%, rgba(199, 219, 255, 1) 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#ffffff", endColorstr="#c7dbff", GradientType=1);
+  height: 100vh;
 }
 </style>

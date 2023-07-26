@@ -8,7 +8,7 @@ module.exports = {
   // 设置路由前缀，通常用于部署到非根目录
   base: "/",
   // 配置路由模式
-  mode: "hash",
+  mode: "history",
   // 插件
   plugins: [
     "@hsui/plugin-micro-app",
