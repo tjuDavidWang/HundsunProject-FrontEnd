@@ -4,7 +4,7 @@ module.exports = {
   // 应用类型
   type: "app",
   // 打开之后将使用内置的路由引擎，自动处理路由关系，否则需要手动设置路由
-  autoRouting: true,
+  autoRouting: false,
   // 设置路由前缀，通常用于部署到非根目录
   base: "/",
   // 配置路由模式
