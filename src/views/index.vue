@@ -1,3 +1,4 @@
+<!--index.vue-->
 <template>
   <div>
     <div class="layout">
@@ -8,15 +9,11 @@
         <h-col span="19" id="left-side">
           <div class="layout-header"></div>
           <div class="layout-content">
-            <h-button type="primary">新增</h-button>
-            <br><br>
             <div class="layout-content-main">
-              <Table />
+              <TestA />
             </div>
           </div>
-          <div class="layout-copy">
-            2017-2030 &copy; HUNDSUN
-          </div>
+
         </h-col>
       </h-row>
     </div>
@@ -25,6 +22,8 @@
 <script>
 import SideBar from '../components/SideBar.vue';
 import Table from '../components/Table.vue'
+import TestA from '../components/TestA.vue';
+import TestB from '../components/TestB.vue';
 export default {
   data() {
     return {
@@ -33,7 +32,9 @@ export default {
   },
   components: {
     SideBar,
-    Table
+    Table,
+    TestA,
+    TestB
   }
 };
 </script>
