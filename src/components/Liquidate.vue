@@ -1,8 +1,25 @@
 <template>
     <div class="liquidate">
-        <h1>产品列表</h1>
-        <h-table :data="tData" :columns="columns" style="margin-bottom: 8px;"></h-table>
-        <h-page :total="totalNum" @on-change="dataChange" show-elevator show-total :page-size="10"></h-page>
+
+        <h1>清算功能-示意</h1>
+        <br><br>
+        <div class="button-row">
+            <h-button type="primary" icon="time" @click="UpdateTime">更新时间</h-button>
+            <span style="width:8em"><b>当前日期：</b></span>
+            <h-fast-date :value="CurDate" format="yyyy-MM-dd" type="date" placeholder="当前日期"></h-fast-date>
+            <h-button type="primary" icon="refresh" :disabled="disableUpdate" @click="UpdateValue">{{ text2 }}</h-button>
+
+            <h-button type="primary" :loading="loading2" :icon="icon" @click="toLoading" :disabled="disabled">
+                <span v-if="!loading2">{{ text3 }}</span>
+                <span v-else>Loading...</span>
+            </h-button>
+        </div>
+
+        <h-table :data="tData" :row-class-name="rowClassName" :columns="columns" headAlgin="center" bodyAlgin="center"
+            style="margin:10px;" stripe></h-table>
+
+        <h-page :total="totalNum" @on-change="dataChange" show-elevator show-total :page-size="10"
+            style="margin:10%;"></h-page>
     </div>
 </template>
 <script>
@@ -78,25 +95,69 @@ export default {
             tData: data.slice(0, 10),
             columns: columns,
             totalNum: data.length,
+
+            CurDate: "2023-07-31",
+
+            text2: "更新净值",
+            disableUpdate: false,
+
+            //清算按钮
+            loading2: false,
+            icon: "calculator",
+            text3: "清算",
+            disabled: false,
         };
     },
     methods: {
-        pageChange(index) {
-            // console.log(index);
-        },
-        numChange(value) {
-            console.log(value);
-        },
         dataChange(i) {
             this.tData = data.slice((i - 1) * 5, i * 5);
         },
+        toLoading() {
+            this.loading2 = true;
+            setTimeout(() => {
+                this.loading2 = false;
+                this.icon = "checkmark-round";
+                this.text3 = "当日清算已完成";
+
+                this.disabled = true;
+                this.disableUpdate = true;
+
+            }, 3000);
+        },
+        UpdateTime() {
+            let currentDate = new Date(this.CurDate);
+            currentDate.setDate(currentDate.getDate() + 1); // add one day
+
+            let year = currentDate.getFullYear();
+            let month = ("0" + (currentDate.getMonth() + 1)).slice(-2); // months are 0-indexed in JavaScript
+            let day = ("0" + currentDate.getDate()).slice(-2);
+            this.CurDate = `${year}-${month}-${day}`;
+
+            this.disabled = false;
+            this.disableUpdate = false;
+            this.text3 = "清算";
+            this.text2 = "更新净值";
+        },
+        UpdateValue() {
+            this.disableUpdate = true;
+            this.text2 = "净值已更新";
+        }
     },
 };
 </script>
 <style scoped>
 .liquidate {
     width: 80vw;
-    padding: 0 5%;
+    padding: 3% 5%;
     text-align: center;
+    height: 100vh;
+}
+
+.button-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 70vw;
+    padding-left: 3%;
 }
 </style>

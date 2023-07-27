@@ -1,27 +1,11 @@
 <template>
   <div class="table">
-    <h-table
-      class="cus-table"
-      border
-      stripe
-      size="large"
-      headAlgin="center"
-      bodyAlgin="center"
-      :data="tData"
-      :columns="columns"
-    ></h-table>
-    <h-page
-      class="cus-page-button"
-      size="small"
-      :total="totalNum"
-      @on-change="dataChange"
-      show-elevator
-      show-total
-      fastArrival
-      page-size="5"
-    ></h-page>
+    <h-table class="cus-table" border stripe size="large" headAlgin="center" bodyAlgin="center" :data="tData"
+      :columns="columns"></h-table>
+    <h-page class="cus-page-button" size="small" :total="totalNum" @on-change="dataChange" show-elevator show-total
+      fastArrival page-size="5"></h-page>
 
-    <UserInfoModal @close = "closeModal" :visible="showModal" :user="selectedUser"></UserInfoModal>
+    <UserInfoModal @close="closeModal" :visible="showModal" :user="selectedUser"></UserInfoModal>
   </div>
 </template>
 
@@ -222,6 +206,7 @@ export default {
 .cus-table {
   margin-bottom: 2%;
 }
+
 .cus-page-button {
   float: right;
 }
