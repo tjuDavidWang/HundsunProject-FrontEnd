@@ -15,7 +15,7 @@
                 <router-link to="/ListCustomers">
                     <h-menu-item name="1-1">客户列表</h-menu-item>
                 </router-link>
-                <router-link to="/purchase">
+                <router-link to="/AddCustomer">
                     <h-menu-item name="1-2">新增客户</h-menu-item>
                 </router-link>
             </h-submenu>

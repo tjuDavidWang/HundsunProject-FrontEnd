@@ -30,6 +30,10 @@ function ListCustomers() {
 function Liquidate() {
   return import(/* webpackChunkName: "Liquidate" */ '@/components/Liquidate.vue')
 }
+function AddCustomer() {
+  return import(/* webpackChunkName: "UserCreate" */ '@/components/UserCreate.vue')
+
+}
 export default initRouter(
   [
     {
@@ -66,7 +70,7 @@ export default initRouter(
             {
               name: 'AddCustomer',
               path: 'AddCustomer',
-              component: TestB,
+              component: AddCustomer,
             },
             {
               name: 'ListFunds',
