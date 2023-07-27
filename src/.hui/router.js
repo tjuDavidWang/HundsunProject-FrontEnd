@@ -24,7 +24,12 @@ function ListProducts() {
 function Purchase() {
   return import(/* webpackChunkName: "Subscription" */ '@/components/Subscription.vue')
 }
-
+function ListCustomers() {
+  return import(/* webpackChunkName: "CustomerTable" */ '@/components/CustomerTable.vue')
+}
+function Liquidate() {
+  return import(/* webpackChunkName: "Liquidate" */ '@/components/Liquidate.vue')
+}
 export default initRouter(
   [
     {
@@ -54,19 +59,24 @@ export default initRouter(
               component: TestB,
             },
             {
-              name: 'list-customer',
-              path: 'list-customer',
+              name: 'ListCustomers',
+              path: 'ListCustomers',
+              component: ListCustomers,
+            },
+            {
+              name: 'AddCustomer',
+              path: 'AddCustomer',
               component: TestB,
             },
             {
-              name: 'add-customer',
-              path: 'add-customer',
-              component: TestB,
-            },
-            {
-              name: 'list-product',
-              path: 'list-product',
+              name: 'ListFunds',
+              path: 'ListFunds',
               component: ListProducts,
+            },
+            {
+              name: 'Liquidate',
+              path: 'Liquidate',
+              component: Liquidate,
             }
           ],
         },
