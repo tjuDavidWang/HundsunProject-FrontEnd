@@ -1,145 +1,81 @@
 <template>
     <div class="liquidate">
+        <h1>产品列表</h1>
         <h-table :data="tData" :columns="columns" style="margin-bottom: 8px;"></h-table>
-        <h-page :total="totalNum" @on-change="dataChange" show-elevator show-total :page-size="5"></h-page>
+        <h-page :total="totalNum" @on-change="dataChange" show-elevator show-total :page-size="10"></h-page>
     </div>
 </template>
 <script>
 var data = [
     {
-        name: "王小明",
-        age: 18,
-        address: "北京市朝阳区芍药居",
+        fundNumber: "123452145323",
+        fundName: "恒生训练营",
+        fundValue: 3.5,
     },
     {
-        name: "张小刚",
-        age: 25,
-        address: "北京市海淀区西二旗",
+        fundNumber: "123452145324",
+        fundName: "恒生训练营2",
+        fundValue: 2.3,
     },
     {
-        name: "李小红",
-        age: 30,
-        address: "上海市浦东新区世纪大道",
+        fundNumber: "123452145325",
+        fundName: "恒生训练营3",
+        fundValue: 1.7,
     },
     {
-        name: "周小伟",
-        age: 26,
-        address: "深圳市南山区深南大道",
+        fundNumber: "123452145326",
+        fundName: "恒生训练营4",
+        fundValue: 4.2,
     },
     {
-        name: "王小明",
-        age: 18,
-        address: "北京市朝阳区芍药居",
+        fundNumber: "123452145327",
+        fundName: "恒生训练营5",
+        fundValue: 2.9,
     },
     {
-        name: "张小刚",
-        age: 25,
-        address: "北京市海淀区西二旗",
+        fundNumber: "123452145328",
+        fundName: "恒生训练营6",
+        fundValue: 3.1,
     },
     {
-        name: "李小红",
-        age: 30,
-        address: "上海市浦东新区世纪大道",
+        fundNumber: "123452145329",
+        fundName: "恒生训练营7",
+        fundValue: 2.6,
     },
     {
-        name: "周小伟",
-        age: 26,
-        address: "深圳市南山区深南大道",
+        fundNumber: "123452145330",
+        fundName: "恒生训练营8",
+        fundValue: 3.8,
     },
     {
-        name: "11",
-        age: 18,
-        address: "北京市朝阳区芍药居",
+        fundNumber: "123452145331",
+        fundName: "恒生训练营9",
+        fundValue: 2.4,
     },
     {
-        name: "12",
-        age: 25,
-        address: "北京市海淀区西二旗",
-    },
-    {
-        name: "13",
-        age: 18,
-        address: "北京市朝阳区芍药居",
-    },
-    {
-        name: "14",
-        age: 25,
-        address: "北京市海淀区西二旗",
-    },
-    {
-        name: "15",
-        age: 18,
-        address: "北京市朝阳区芍药居",
-    },
-    {
-        name: "16",
-        age: 25,
-        address: "北京市海淀区西二旗",
-    },
-    {
-        name: "17",
-        age: 18,
-        address: "北京市朝阳区芍药居",
-    },
-    {
-        name: "18",
-        age: 25,
-        address: "北京市海淀区西二旗",
-    },
-    {
-        name: "19",
-        age: 18,
-        address: "北京市朝阳区芍药居",
-    },
-    {
-        name: "20",
-        age: 25,
-        address: "北京市海淀区西二旗",
-    },
-    {
-        name: "21",
-        age: 25,
-        address: "北京市海淀区西二旗",
-    },
-    {
-        name: "22",
-        age: 25,
-        address: "北京市海淀区西二旗",
-    },
-    {
-        name: "23",
-        age: 25,
-        address: "北京市海淀区西二旗",
-    },
-    {
-        name: "24",
-        age: 25,
-        address: "北京市海淀区西二旗",
-    },
-    {
-        name: "25",
-        age: 25,
-        address: "北京市海淀区西二旗",
-    },
+        fundNumber: "123452145332",
+        fundName: "恒生训练营10",
+        fundValue: 3.0,
+    }
 ];
 var columns = [
     {
+        title: "产品代码",
+        key: "fundNumber",
+    },
+    {
         title: "产品名称",
-        key: "name",
+        key: "fundName",
     },
     {
-        title: "年龄",
-        key: "age",
-    },
-    {
-        title: "地址",
-        key: "address",
+        title: "产品净值",
+        key: "fundValue",
     },
 ];
 export default {
     data() {
         return {
-            tData: data.slice(0, 5),
+            tData: data.slice(0, 10),
             columns: columns,
             totalNum: data.length,
         };
@@ -158,7 +94,9 @@ export default {
 };
 </script>
 <style scoped>
-.liquidate{
+.liquidate {
     width: 80vw;
+    padding: 0 5%;
+    text-align: center;
 }
 </style>
