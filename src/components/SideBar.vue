@@ -25,7 +25,7 @@
                     <h-icon name="android-contacts"></h-icon>
                     <span slot="title">产品管理</span>
                 </template>
-                <router-link to="/purchase">
+                <router-link to="/list-product">
                     <h-menu-item name="2-1">产品管理</h-menu-item>
                 </router-link>
             </h-submenu>
