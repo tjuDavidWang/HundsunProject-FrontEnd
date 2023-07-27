@@ -1,8 +1,9 @@
 <!--SideBar.vue-->
 <template>
     <div id="side-bar">
-        <h-menu theme="dark" height="auto" open-names="['1','2','3']" width="auto" :collapse="isCollapse === 'true'" accordion >
-            <router-link to="/homepage">
+        <h-menu theme="dark" height="auto" open-names="['1','2','3']" width="auto" :collapse="isCollapse === 'true'"
+            accordion>
+            <router-link to="/home">
                 <h-menu-item name="0"><h-icon name="homepage"></h-icon>首页</h-menu-item>
             </router-link>
             <h-submenu name="1">

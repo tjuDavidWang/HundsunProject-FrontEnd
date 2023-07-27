@@ -18,6 +18,12 @@ function TestB() {
 function __404__() {
   return import(/* webpackChunkName: "__404__" */ '@/views/__404__.vue')
 }
+function ListProducts() {
+  return import(/* webpackChunkName: "NavGraph" */ '@/components/NavGraph.vue')
+}
+function Purchase() {
+  return import(/* webpackChunkName: "Subscription" */ '@/components/Subscription.vue')
+}
 
 export default initRouter(
   [
@@ -33,14 +39,14 @@ export default initRouter(
           component: Index,
           children: [
             {
-              name: 'homepage',
-              path: 'homepage',
+              name: 'home',
+              path: 'home',
               component: IndexHome,
             },
             {
               name: 'purchase',
               path: 'purchase',
-              component: TestA,
+              component: Purchase,
             },
             {
               name: 'redeem',
@@ -58,9 +64,9 @@ export default initRouter(
               component: TestB,
             },
             {
-              name: 'product-management',
-              path: 'product-management',
-              component: TestB,
+              name: 'list-product',
+              path: 'list-product',
+              component: ListProducts,
             }
           ],
         },
