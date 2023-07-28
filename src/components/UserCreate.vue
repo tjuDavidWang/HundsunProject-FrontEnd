@@ -1,168 +1,212 @@
 <template>
-    <div class="purchase-page">
-        <div>
-            <h-form ref="invester" :model="invester" :rules="rule_invester" :label-width="100" inline>
-                <h-form-item prop="cer_number" label="投资人查询">
-                    <h-input v-model="invester.cer_number" size="large" icon="close" placeholder="请输入当前投资人证件号码"
-                        style="width:56vw" @on-click="onclick"></h-input>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                    <h-button type="primary" @click="handleSubmit('invester')">查询</h-button>
-                </h-form-item>
-
-                <h-form-item prop="user_name" label="投资人名称">
-                    <h-input v-model="invester.user_name" :readonly="true" size="large" style="width: 25vw;"></h-input>
-                </h-form-item>
-                <h-form-item prop="user_type" label="投资人类型">
-                    <h-input v-model="invester.user_type" :readonly="true" size="large" style="width: 25vw;"></h-input>
-                </h-form-item>
-
-                <h-form-item prop="cer_type" label="投资人证件类型">
-                    <h-input v-model="invester.cer_type" :readonly="true" size="large" style="width: 25vw;"></h-input>
-                </h-form-item>
-                <h-form-item prop="risk_grade" label="投资人风险等级">
-                    <h-input v-model="invester.risk_grade" :readonly="true" size="large" style="width: 25vw;"></h-input>
-                </h-form-item>
-
-                <h-form-item prop="bank_card" label="银行卡选择">
-                    <h-select v-model="invester.bank_card" style="width:56vw;">
-                        <h-option v-for="item in invester.bank_card_List" :value="item.value" :key="item.value">{{
-                            item.label }}</h-option>
-                    </h-select>
-                    <!--span class="demo-data">{{ invester.bank_card }}</span-->
-                </h-form-item>
-            </h-form>
-            <h-form ref="bank_card" :model="bank_card" :label-width="100" inline>
-                <h-form-item prop="bank_name" label="银行名称">
-                    <h-input v-model="bank_card.bank_name" :readonly="true" size="large" style="width: 25vw;"></h-input>
-                </h-form-item>
-                <h-form-item prop="card_balance" label="余额">
-                    <h-input v-model="bank_card.card_balance" :readonly="true" size="large" style="width: 25vw;"></h-input>
-                </h-form-item>
-            </h-form>
-            <h-form ref="fund_product" :model="fund_product" :rules="rule_fund_product" :label-width="100" inline>
-                <h-form-item prop="fund_number" label="基金代码">
-                    <h-input v-model="fund_product.fund_number" size="large" icon="close" placeholder="请输入当前基金产品代码"
-                        style="width:56vw;" @on-click="onclick"></h-input>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                    <h-button type="primary" @click="handleSubmit('fund_product')">查询</h-button>
-                </h-form-item>
-                <h-form-item prop="fund_name" label="基金名称">
-                    <h-input v-model="fund_product.fund_name" :readonly="true" size="large" style="width: 25vw;"></h-input>
-                </h-form-item>
-                <h-form-item prop="fund_type" label="基金类型">
-                    <h-input v-model="fund_product.fund_type" :readonly="true" size="large" style="width: 25vw;"></h-input>
-                </h-form-item>
-                <h-form-item prop="fund_risk" label="基金风险等级">
-                    <h-input v-model="fund_product.fund_risk" :readonly="true" size="large" style="width: 25vw;"></h-input>
-                </h-form-item>
-            </h-form>
-            <h-form ref="subcription" :model="subcription" :rules="rule_subcription" :label-width="100" inline>
-                <h-form-item prop="sub_amount" label="申购金额">
-                    <h-input v-model="subcription.sub_amount" size="large" icon="close" placeholder="请输入当前银行卡对基金产品的认购金额"
-                        style="width:56vw;" @on-click="onclick"></h-input>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                    <h-button type="primary" @click="handleSubmit('subcription')">查询</h-button>
-                </h-form-item>
-            </h-form>
+  <div class="purchase-page">
+    <div>
+      <h-form
+        ref="invester"
+        :model="invester"
+        :rules="rule_invester"
+        :label-width="100"
+        inline
+      >
+        <h-form-item label="投资人名称">
+          <h-input
+            v-model="invester.user_name"
+            size="large"
+            style="width: 25vw"
+          ></h-input>
+        </h-form-item>
+        <h-form-item prop="user_type" label="投资人类型">
+          <h-select v-model="invester.user_type" style="width: 25vw">
+            <h-option
+              v-for="item in investor_type"
+              :value="item.value"
+              :key="item.value"
+              >{{ item.label }}</h-option
+            >
+          </h-select>
+        </h-form-item>
+        <h-form-item prop="cer_type" label="投资人证件类型">
+          <h-select v-model="invester.cer_type" style="width: 25vw">
+            <h-option
+              v-for="item in certificate_type"
+              :value="item.value"
+              :key="item.value"
+              >{{ item.label }}</h-option
+            >
+          </h-select>
+        </h-form-item>
+        <h-form-item label="证件号码">
+          <h-input
+            v-model="invester.cer_number"
+            size="large"
+            style="width: 25vw"
+          ></h-input>
+        </h-form-item>
+      </h-form>
+      <h-form ref="bank_card" :model="bank_card" :label-width="100" inline>
+        <h-form-item label="银行卡张数">
+          <h-input
+            v-model="invester.bank_num"
+            size="large"
+            style="width: 6vw"
+          ></h-input>
+        </h-form-item>
+        <div v-for="(bankCard, index) in filteredBankCards" :key="index">
+          <template v-if="Number(invester.bank_num) <= 5">
+            <h-form-item label="银行选择">
+              <h-select v-model="bankCard.bank_name" style="width: 25vw">
+                <h-option
+                  v-for="item in bank_List"
+                  :value="item.value"
+                  :key="item.value"
+                  >{{ item.label }}</h-option
+                >
+              </h-select>
+            </h-form-item>
+            <h-form-item label="银行卡号">
+              <h-input
+                v-model="bankCard.card_id"
+                size="large"
+                style="width: 25vw"
+              ></h-input> </h-form-item
+          ></template>
         </div>
-        <br><br>
+        <div>
+          <h-form-item v-if="Number(invester.bank_num) > 0&&Number(invester.bank_num)<=5">
+            <h-button class="next" type="primary">下一步</h-button>
+          </h-form-item>
+        </div>
+      </h-form>
     </div>
+    <br /><br />
+  </div>
 </template>
 <script>
 export default {
-    data() {
-        return {
-            invester: {
-                cer_number: "",
-                user_name: "",
-                user_type: "",
-                cer_type: "",
-                risk_grade: "",
-                bank_card: "",
-                bank_card_List: [
-                    {
-                        value: "beijing",
-                        label: "北京市",
-                    },
-                    {
-                        value: "shanghai",
-                        label: "上海市",
-                    },
-                    {
-                        value: "shenzhen",
-                        label: "深圳市",
-                    },
-                    {
-                        value: "hangzhou",
-                        label: "杭州市",
-                    },
-                ],
+  data() {
+    return {
+      invester: {
+        cer_number: "",
+        user_name: "",
+        user_type: "",
+        cer_type: "",
+        bank_num: "",
+        formDynamic: {
+          bank_card: [
+            {
+              bank_name: "",
+              card_id: "",
             },
-            rule_invester: {
-                cer_number: [
-                    { required: true, message: "请填写投资人证件号码", trigger: "blur" },
-                    {
-                        type: "string",
-                        min: 18,
-                        message: "身份证号长度不能小于18位",
-                        trigger: "blur",
-                    },
-                    {
-                        type: "string",
-                        max: 18,
-                        message: "身份证号长度不能大于18位",
-                        trigger: "blur",
-                    },
-                ],
-            },
-            bank_card: {
-                bank_name: "",
-                card_balance: "",
-            },
-            fund_product: {
-                fund_number: "",
-                fund_name: "",
-                fund_type: "",
-                fund_risk: "",
-            },
-            rule_fund_product: {
-                fund_number: [
-                    { required: true, message: "请填写基金产品代码", trigger: "blur" },
-                ],
-            },
-            subcription: {
-                sub_amount: "",
-            },
-            rule_subcription: {
-                sub_amount: [
-                    { required: true, message: "请填写认购金额", trigger: "blur" },
-                ],
-            },
-        };
-    },
-    methods: {
-        onclick() {
-            this.$hMessage.info("icon点击事件");
+          ],
         },
-        handleSubmit(name) {
-            this.$refs[name].validate((valid) => {
-                if (valid) {
-                    this.$hMessage.success("提交成功!");
-                } else {
-                    this.$hMessage.error("表单验证失败!");
-                }
-            });
+      },
+      investor_type: [
+        {
+          value: "person",
+          label: "个人",
         },
+        {
+          value: "institution",
+          label: "机构",
+        },
+      ],
+      certificate_type: [
+        {
+          value: "Identification-card",
+          label: "居民身份证",
+        },
+        {
+          value: "HM-card",
+          label: "港澳居民往来内地通行证",
+        },
+        {
+          value: "TW-card",
+          label: "台湾居民来往大陆通行证",
+        },
+        {
+          value: "passport",
+          label: "护照",
+        },
+      ],
+      bank_List: [
+        {
+          value: "chinaBank",
+          label: "中国银行",
+        },
+        {
+          value: "conBank",
+          label: "中国建设银行",
+        },
+        {
+          value: "iAndCBank",
+          label: "中国工商银行",
+        },
+        {
+          value: "agrBank",
+          label: "中国农业银行",
+        },
+      ],
+    };
+  },
+  watch: {
+    "invester.bank_num"(newValue, oldValue) {
+      // 监听 bank_num 的变化，在变化时调整 bank_card 数组的对象个数
+      if (newValue > oldValue) {
+        const diff = newValue - this.invester.formDynamic.bank_card.length;
+        for (let i = 0; i < diff; i++) {
+          this.invester.formDynamic.bank_card.push({
+            bank_name: "",
+            card_id: "",
+          });
+        }
+      } else if (newValue < oldValue) {
+        const diff = oldValue - newValue;
+        this.invester.formDynamic.bank_card.splice(newValue, diff);
+      }
+      console.log(this.invester);
     },
+  },
+  computed: {
+    filteredBankCards() {
+      const num = Number(this.invester.bank_num);
+      return this.invester.formDynamic.bank_card.slice(0, num);
+    },
+  },
+  methods: {
+    clickme() {
+      console.log(this.bank_card);
+    },
+    onclick() {
+      this.$hMessage.info("icon点击事件");
+    },
+    handleSubmit(name) {
+      this.$refs[name].validate((valid) => {
+        if (valid) {
+          this.$hMessage.success("提交成功!");
+        } else {
+          this.$hMessage.error("表单验证失败!");
+        }
+      });
+    },
+  },
 };
 </script>
 <style scoped>
 #page-divider {
-    margin-right: 0px;
-    padding-right: 0;
-    padding-left: 100px;
+  margin-right: 0px;
+  padding-right: 0;
+  padding-left: 100px;
 }
 
 .purchase-page {
-    width: 100%;
-    padding-left: 5vw;
-    padding-top: 15%;
+  width: 100%;
+  padding-left: 5vw;
+  padding-top: 15%;
+}
+
+.next {
+  margin-left: 24vw;
+  width:6vw;
+  margin-top:3vw;
 }
 </style>
