@@ -1,9 +1,7 @@
-<!--SideBar.vue-->
 <template>
     <div id="side-bar">
-        <h-menu theme="dark" :active-name="activeMenuItem" open-names="['1','2','3','4']" width="auto"
+        <h-menu theme="dark" :active-name="activeMenuItem" open-names="['1', '2', '3', '4']" width="auto"
             :collapse="isCollapse === 'true'">
-
             <router-link to="/home">
                 <h-menu-item name="0"><h-icon name="homepage"></h-icon>首页</h-menu-item>
             </router-link>
@@ -27,7 +25,7 @@
                     <span slot="title">产品管理</span>
                 </template>
                 <router-link to="/ListFunds">
-                    <h-menu-item name="2-1">产品管理</h-menu-item>
+                    <h-menu-item name="2-1">产品列表</h-menu-item>
                 </router-link>
             </h-submenu>
 
@@ -57,6 +55,7 @@
         <br />
     </div>
 </template>
+  
 <script>
 export default {
     data() {
@@ -64,12 +63,39 @@ export default {
             isCollapse: "false",
         };
     },
+    computed: {
+        activeMenuItem() {
+            switch (this.$route.path) {
+                case "/home":
+                    return "0";
+                case "/ListCustomers":
+                    return "1-1";
+                case "/AddCustomer":
+                    return "1-2";
+                case "/ListFunds":
+                    return "2-1";
+                case "/purchase":
+                    return "3-1";
+                case "/redeem":
+                    return "3-2";
+                case "/Liquidate":
+                    return "4-1";
+                default:
+                    return ""; // 如果没有匹配的路径，返回一个空字符串
+            }
+        },
+    },
 };
 </script>
+  
 <style>
 #side-bar {
     background: rgb(28, 35, 47);
-    background: linear-gradient(180deg, rgba(28, 35, 47, 1) 0%, rgba(28, 35, 47, 1) 60%, rgba(42, 48, 122, 1) 100%);
+    background: linear-gradient(180deg,
+            rgba(28, 35, 47, 1) 0%,
+            rgba(28, 35, 47, 1) 60%,
+            rgba(42, 48, 122, 1) 100%);
     height: 100vh;
 }
 </style>
+  
