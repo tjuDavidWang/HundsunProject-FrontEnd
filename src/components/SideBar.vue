@@ -1,7 +1,8 @@
 <!--SideBar.vue-->
 <template>
     <div id="side-bar">
-        <h-menu theme="dark" height="auto" open-names="['1','2','3','4']" width="auto" :collapse="isCollapse === 'true'">
+        <h-menu theme="dark" :active-name="activeMenuItem" open-names="['1','2','3','4']" width="auto"
+            :collapse="isCollapse === 'true'">
 
             <router-link to="/home">
                 <h-menu-item name="0"><h-icon name="homepage"></h-icon>首页</h-menu-item>

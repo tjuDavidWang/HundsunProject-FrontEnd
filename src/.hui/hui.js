@@ -1,4 +1,3 @@
-import '@tmp/router.js'
 import { store, frameEmitter, singleSpaVue, hCoreReference } from '@hsui/core'
 if (frameEmitter) {
   frameEmitter.on('register-root-module', ({ root }) => {
