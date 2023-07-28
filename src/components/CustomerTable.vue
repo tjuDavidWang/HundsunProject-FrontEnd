@@ -1,100 +1,121 @@
 <template>
   <div class="table">
-    <h-table class="cus-table" border stripe size="large" headAlgin="center" bodyAlgin="center" :data="tData"
-      :columns="columns"></h-table>
-    <h-page class="cus-page-button" size="small" :total="totalNum" @on-change="dataChange" show-elevator show-total
-      fastArrival page-size="5"></h-page>
+    <h-table
+      class="cus-table"
+      border
+      stripe
+      size="large"
+      headAlgin="center"
+      bodyAlgin="center"
+      :data="tData"
+      :columns="columns"
+    ></h-table>
+    <h-page
+      class="cus-page-button"
+      size="small"
+      :total="totalNum"
+      @on-change="dataChange"
+      show-elevator
+      show-total
+      fastArrival
+      page-size="5"
+    ></h-page>
 
-    <UserInfoModal @close="closeModal" :visible="showModal" :user="selectedUser"></UserInfoModal>
+    <UserInfoModal
+      @close="closeModal"
+      :visible="showModal"
+      :user="selectedUser"
+    ></UserInfoModal>
   </div>
 </template>
 
 <script>
 import UserInfoModal from "./UserInfoModal.vue";
+import UserEditModal from "./UserEditModal.vue"
 
 var data = [
   {
-    name: "张小刚",
+    name: "张小刚1",
     type: "个人",
     cerType: "身份证",
-    ID: "12365478",
+    ID: "012365478",
     riskLevel: "低",
   },
   {
-    name: "张小刚",
+    name: "张小刚2",
     type: "个人",
     cerType: "身份证",
-    ID: "12365478",
+    ID: "112365478",
     riskLevel: "低",
   },
   {
-    name: "张小刚",
+    name: "张小刚3",
     type: "个人",
     cerType: "身份证",
-    ID: "12365478",
+    ID: "212365478",
     riskLevel: "低",
   },
   {
-    name: "张小刚",
+    name: "张小刚4",
     type: "个人",
     cerType: "身份证",
-    ID: "12365478",
+    ID: "312365478",
     riskLevel: "低",
   },
   {
-    name: "张小刚",
+    name: "张小刚5",
     type: "个人",
     cerType: "身份证",
-    ID: "12365478",
+    ID: "412365478",
     riskLevel: "低",
   },
   {
-    name: "张小刚",
+    name: "张小刚6",
     type: "个人",
     cerType: "身份证",
-    ID: "12365478",
+    ID: "512365478",
     riskLevel: "低",
   },
   {
-    name: "张小刚",
+    name: "张小刚7",
     type: "个人",
     cerType: "身份证",
-    ID: "12365478",
+    ID: "612365478",
     riskLevel: "低",
   },
   {
-    name: "张小刚",
+    name: "张小刚8",
     type: "个人",
     cerType: "身份证",
-    ID: "12365478",
+    ID: "712365478",
     riskLevel: "低",
   },
   {
-    name: "张小刚",
+    name: "张小刚9",
     type: "个人",
     cerType: "身份证",
-    ID: "12365478",
+    ID: "812365478",
     riskLevel: "低",
   },
   {
-    name: "张小刚",
+    name: "张小刚10",
     type: "个人",
     cerType: "身份证",
-    ID: "12365478",
+    ID: "912365478",
     riskLevel: "低",
   },
   {
-    name: "张小刚",
+    name: "张小刚11",
     type: "个人",
     cerType: "身份证",
-    ID: "12365478",
+    ID: "1012365478",
     riskLevel: "低",
   },
   {
-    name: "张小刚",
+    name: "张小刚12",
     type: "个人",
     cerType: "身份证",
-    ID: "12365478",
+    ID: "1112365478",
     riskLevel: "低",
   },
 ];
@@ -102,6 +123,7 @@ export default {
   name: "CustomerTable",
   components: {
     UserInfoModal,
+    UserEditModal,
   },
   data() {
     return {
@@ -138,7 +160,7 @@ export default {
                 "Button",
                 {
                   props: {
-                    type: "info",
+                    type: "confirm",
                     size: "small",
                   },
                   on: {
@@ -155,7 +177,7 @@ export default {
                 "Button",
                 {
                   props: {
-                    type: "success",
+                    type: "confirm",
                     size: "small",
                   },
                 },
@@ -166,8 +188,14 @@ export default {
                 "Button",
                 {
                   props: {
-                    type: "error",
+                    type: "confirm",
                     size: "small",
+                  },
+                  on: {
+                    click: () => {
+                      console.log(user);
+                      this.handleDelete(user);
+                    },
                   },
                 },
                 "删除"
@@ -179,6 +207,7 @@ export default {
       totalNum: data.length,
       showModal: false,
       selectedUser: {},
+      curPage: 1,
     };
   },
   methods: {
@@ -187,6 +216,7 @@ export default {
     },
     dataChange(i) {
       this.tData = data.slice((i - 1) * 5, i * 5);
+      this.curPage = i;
     },
 
     viewUser(user) {
@@ -195,8 +225,17 @@ export default {
       this.selectedUser = user;
     },
     closeModal() {
-      console.log("123")
+      console.log("123");
       this.showModal = false;
+    },
+    handleDelete(user) {
+      data.forEach((item, index) => {
+        if (item.ID === user.ID) {
+          data.splice(index, 1);
+        }
+      });
+      this.totalNum = this.totalNum - 1;
+      this.tData = data.slice((this.curPage - 1) * 5, this.curPage * 5);
     },
   },
 };

@@ -5,37 +5,41 @@
       :columns="columns"
       headAlgin="center"
       bodyAlgin="center"
-      style="margin: 10px"
       stripe
       border
     ></h-table>
-
     <h-page
+      class="fund-page-button"
       :total="totalNum"
       @on-change="dataChange"
       show-elevator
       show-total
-      :page-size="10"
-      style="margin: 10%"
+      :page-size="5"
     ></h-page>
+    <NavGraph
+      @close="closeModal"
+      :visible="showModal"
+      :fund="selectedFund"
+    ></NavGraph>
   </div>
 </template>
 
 <script>
+import NavGraph from "./NavGraph.vue";
 var data = [
   {
     fundNumber: "123452145323",
     fundName: "恒生训练营",
     fundType: "股票基金",
-    fundRisk: "低",
+    fundRisk: 1,
     property: 10000.0,
     share: 2000,
   },
   {
     fundNumber: "123452145324",
     fundName: "恒生训练营2",
-    fundType: "股票基金",
-    fundRisk: "低",
+    fundType: "货币基金",
+    fundRisk: 2,
     property: 10000.0,
     share: 2000,
   },
@@ -106,9 +110,12 @@ var data = [
 ];
 export default {
   name: "FundTable",
+  components: {
+    NavGraph,
+  },
   data() {
     return {
-      tData: data.slice(0, 10),
+      tData: data.slice(0, 5),
       totalNum: data.length,
       columns: [
         {
@@ -140,19 +147,19 @@ export default {
           key: "action",
           render: (h, params) => {
             console.log(this);
-            const user = params.row;
+            const fund = params.row;
             return h("div", [
               h(
                 "Button",
                 {
                   props: {
-                    type: "info",
+                    type: "confirm",
                     size: "small",
                   },
                   on: {
                     click: () => {
-                      console.log(user);
-                      this.viewUser(user);
+                      console.log(fund);
+                      this.viewFund(fund);
                     },
                   },
                 },
@@ -163,7 +170,7 @@ export default {
                 "Button",
                 {
                   props: {
-                    type: "success",
+                    type: "confirm",
                     size: "small",
                   },
                 },
@@ -174,8 +181,14 @@ export default {
                 "Button",
                 {
                   props: {
-                    type: "error",
+                    type: "confirm",
                     size: "small",
+                  },
+                  on: {
+                    click: () => {
+                      console.log(fund);
+                      this.handleDelete(fund);
+                    },
                   },
                 },
                 "删除"
@@ -184,12 +197,42 @@ export default {
           },
         },
       ],
+      showModal: false,
+      selectedFund: {},
+      curPage : 1,
     };
   },
   methods: {
     dataChange(i) {
       this.tData = data.slice((i - 1) * 5, i * 5);
+      curPage = i;
+    },
+
+    viewFund(fund) {
+      console.log(fund, 123);
+      this.showModal = true;
+      this.selectedFund = fund;
+    },
+    closeModal() {
+      console.log("123");
+      this.showModal = false;
+    },
+    handleDelete(fund) {
+      data.forEach((item, index) => {
+        if (item.fundNumber === fund.fundNumber) {
+          data.splice(index, 1);
+        }
+      });
+      this.totalNum = this.totalNum - 1;
+      this.tData = data.slice((this.curPage - 1) * 5, this.curPage * 5);
     },
   },
 };
 </script>
+
+<style scoped>
+.fund-page-button {
+  float: right;
+  margin: 1vw;
+}
+</style>
