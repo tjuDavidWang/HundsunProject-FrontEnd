@@ -58,7 +58,8 @@
                 <h-form-item prop="sub_amount" label="申购金额">
                     <h-input v-model="subcription.sub_amount" size="large" icon="close" placeholder="请输入当前银行卡对基金产品的认购金额"
                         style="width:56vw;" @on-click="onclick"></h-input>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                    <h-button type="primary" @click="handleSubmit('subcription')">查询</h-button>
+                    <h-button type="primary"  @click="s_click = true">认购</h-button>
+                    <h-msg-box v-model="s_click" :escClose="true" title="确认申购吗？" @on-ok="handleSubmit('subcription')" @on-cancel="cancel" :beforeEscClose="beforetest"></h-msg-box>
                 </h-form-item>
             </h-form>
         </div>
@@ -113,6 +114,7 @@ export default {
                 ],
             },
             bank_card: {
+                bank_card: "",
                 bank_name: "",
                 card_balance: "",
             },
@@ -128,6 +130,9 @@ export default {
                 ],
             },
             subcription: {
+                cer_number: "",
+                bank_card: "",
+                fund_number: "",
                 sub_amount: "",
             },
             rule_subcription: {
@@ -135,6 +140,7 @@ export default {
                     { required: true, message: "请填写认购金额", trigger: "blur" },
                 ],
             },
+            s_click: false,
         };
     },
     methods: {
@@ -145,9 +151,38 @@ export default {
             this.$refs[name].validate((valid) => {
                 if (valid) {
                     this.$hMessage.success("提交成功!");
+                    const title = "赎回成功";
+                    const content = "<p>一些对话框内容</p><p>一些对话框内容</p>";
+                    this.$hMsgBox.success({
+                        title: title,
+                        content: "",
+                    });
                 } else {
                     this.$hMessage.error("表单验证失败!");
+                    const title = "赎回错误";
+                    const content = "<p>一些对话框内容</p><p>一些对话框内容</p>";
+                    this.$hMsgBox.error({
+                        title: title,
+                        content: "",
+                    });
                 }
+            });
+        },
+        beforetest() {
+            return true;
+        },
+        ok() {
+            this.$hMessage.info("点击了确定");
+        },
+        cancel() {
+            this.$hMessage.info("点击了取消");
+        },
+        instance(type) {
+            const title = "对话框的标题";
+            const content = "<p>一些对话框内容</p><p>一些对话框内容</p>";
+            this.$hMsgBox.success({
+                title: title,
+                content: content,
             });
         },
     },
