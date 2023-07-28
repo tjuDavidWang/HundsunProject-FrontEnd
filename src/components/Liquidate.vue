@@ -1,13 +1,16 @@
 <template>
     <div class="liquidate">
 
-        <h1>清算功能-示意</h1>
+        <h1>清算功能示意</h1>
         <br><br>
         <div class="button-row">
             <h-button type="primary" icon="time" @click="UpdateTime">更新时间</h-button>
             <span style="width:8em"><b>当前日期：</b></span>
             <h-fast-date :value="CurDate" format="yyyy-MM-dd" type="date" placeholder="当前日期"></h-fast-date>
-            <h-button type="primary" icon="refresh" :disabled="disableUpdate" @click="UpdateValue">{{ text2 }}</h-button>
+            <h-button :type="type" icon="refresh" :disabled="disableUpdate" @click="UpdateValue" :loading="loading1">
+                <span v-if="!loading1">{{ text2 }}</span>
+                <span v-else>Loading...</span>
+            </h-button>
 
             <h-button type="primary" :loading="loading2" :icon="icon" @click="toLoading" :disabled="disabled">
                 <span v-if="!loading2">{{ text3 }}</span>
@@ -100,12 +103,14 @@ export default {
 
             text2: "更新净值",
             disableUpdate: false,
+            type: "primary",
+            loading1: false,
 
             //清算按钮
             loading2: false,
             icon: "calculator",
             text3: "清算",
-            disabled: false,
+            disabled: true,
         };
     },
     methods: {
@@ -133,14 +138,21 @@ export default {
             let day = ("0" + currentDate.getDate()).slice(-2);
             this.CurDate = `${year}-${month}-${day}`;
 
-            this.disabled = false;
+            this.disabled = true;
             this.disableUpdate = false;
             this.text3 = "清算";
             this.text2 = "更新净值";
+            this.type = "primary";
         },
         UpdateValue() {
-            this.disableUpdate = true;
-            this.text2 = "净值已更新";
+            this.loading1 = true;
+            setTimeout(() => {
+                this.loading1 = false;
+                this.icon = "checkmark-round";
+                this.text2 = "净值已更新";
+                this.type = "success";
+                this.disabled = false;
+            }, 3000);
         }
     },
 };
