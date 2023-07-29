@@ -1,33 +1,19 @@
 <template>
   <div>
-    <!-- <h-button type="confirm" @click="modal1 = true">详情</h-button> -->
-    <h-msg-box
-      v-model="visible"
-      :escClose="true"
-      title="产品详情"
-      @on-ok="closeModal"
-      @on-cancel="closeModal"
-      @on-close="closeModal"
-      :beforeEscClose="beforetest"
-      width="50vw"
-    >
+    <h-msg-box v-model="visible" :escClose="true" title="产品详情" @on-ok="closeModal" @on-cancel="closeModal"
+      @on-close="closeModal" width="50vw">
       <div class="nav-graph">
         <div>
-          产品名称：<b>{{ fund.fundName }}</b
-          >&nbsp;&nbsp;&nbsp;&nbsp; 产品代码：<b>{{ fund.fundNumber }}</b
-          >&nbsp;&nbsp; 产品类型：<a
-            :style="{
-              backgroundColor: fundTypeColor,
-              color: 'black',
-              width: '6em',
-              borderRadius: '20%',
-            }"
-          >
-            <b>&nbsp;&nbsp;{{ fund.fundType }}&nbsp;&nbsp;</b></a
-          >&nbsp;&nbsp;&nbsp;&nbsp; 风险等级：<a
-            :style="{ color: fundRiskColor }"
-            ><b>R{{ fund.fundRisk }}</b></a
-          >&nbsp;&nbsp;&nbsp;&nbsp;
+          产品名称：<b>{{ fund.fundName }}</b>&nbsp;&nbsp;&nbsp;&nbsp;
+          产品代码：<b>{{ fund.fundNumber }}</b>&nbsp;&nbsp;
+          产品类型：<a :style="{
+            backgroundColor: fundTypeColor,
+            color: 'black',
+            width: '6em',
+            borderRadius: '20%',
+          }">
+            <b>&nbsp;&nbsp;{{ fund.fundType }}&nbsp;&nbsp;</b></a>&nbsp;&nbsp;&nbsp;&nbsp;
+          风险等级：<a :style="{ color: fundRiskColor }"><b>R{{ fund.fundRisk }}</b></a>&nbsp;&nbsp;&nbsp;&nbsp;
         </div>
         <br /><br />
         <div class="graph">
@@ -40,6 +26,7 @@
 
 <script>
 import * as echarts from "echarts";
+import axios from 'axios';
 
 export default {
   name: "NavGraph",
@@ -49,39 +36,94 @@ export default {
   },
   data() {
     return {
-      fundDate: [
-        "2023-07-01",
-        "2023-07-02",
-        "2023-07-03",
-        "2023-07-04",
-        "2023-07-05",
-        "2023-07-06",
-        "2023-07-07",
-        "2023-07-08",
-        "2023-07-09",
-        "2023-07-10",
-        "2023-07-11",
-        "2023-07-12",
-        "2023-07-13",
-        "2023-07-14",
-        "2023-07-15",
-        "2023-07-16",
-        "2023-07-17",
-        "2023-07-18",
-        "2023-07-19",
-        "2023-07-20",
-      ],
-      fundValue: [
-        3.5, 3.3, 2.1, 1.2, 0.5, 1.3, 0.7, 2.3, 1.5, 0.7, 1.2, 0.5, 2.1, 1.3,
-        0.6, 1.4, 0.6, 2.2, -1.4, 0.8,
-      ],
+      fundDate: [],
+      fundValue: [],
+      allData: [],
     };
   },
   methods: {
     closeModal() {
-    console.log(1234);
       this.$emit("close");
     },
+    async fetchData() {
+      try {
+        let response = await axios.get('http://127.0.0.1:9091/getDailyValue?fund_number=' + this.fund.fundNumber);
+        response.data.forEach(item => {
+          this.fundDate.push(item.fundDate);
+          this.fundValue.push(item.fundValue);
+        });
+        this.initChart();
+        console.log(this.fundDate);
+
+
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    initChart() {
+      var chartDom = document.getElementById("main");
+      var myChart = echarts.init(chartDom);
+      var option;
+      console.log(this.fundDate);
+      option = {
+        tooltip: {
+          trigger: "axis",
+          position: function (pt) {
+            return [pt[0], "10%"];
+          },
+        },
+        title: {
+          left: "center",
+          text: "净值走势图",
+        },
+        toolbox: {
+          feature: {
+            dataZoom: {
+              yAxisIndex: "none",
+            },
+            restore: {},
+            saveAsImage: {},
+          },
+        },
+        xAxis: {
+          type: "category",
+          boundaryGap: false,
+          data: this.fundDate,
+        },
+        yAxis: {
+          type: "value",
+          boundaryGap: [0, "100%"],
+        },
+        dataZoom: [
+          {
+            type: "inside",
+            start: 0,
+            end: 100,
+          },
+          {
+            start: 0,
+            end: 10,
+          },
+        ],
+        series: [
+          {
+            name: this.fund.fundName,
+            type: "line",
+            symbol: "none",
+            sampling: "lttb",
+            itemStyle: {
+              color: "#000080",
+            },
+            areaStyle: {
+              color: this.areaStyleColor,
+            },
+            data: this.fundValue,
+          },
+        ],
+      };
+
+      option && myChart.setOption(option);
+    }
   },
   computed: {
     fundTypeColor() {
@@ -91,22 +133,25 @@ export default {
         case "混合基金":
           return "rgb(18,206,249)";
         case "股票基金":
-          return "(255,75,0)rgb";
+          return "rgb(255,75,0)";
         case "债券基金":
           return "#98FB98";
+        default:
+          return "#000000";  // 默认返回黑色
       }
     },
     fundRiskColor() {
-      switch (this.fundRisk) {
+      switch (this.fund.fundRisk) {
         case 1:
           return "rgb(255,207,3)";
         case 2:
         case 3:
-        case 4:
           return "rgb(18,206,249)";
+        case 4:
         case 5:
-        default:
           return "rgb(255,75,0)";
+        default:
+          return "#000000";  // 默认返回黑色
       }
     },
     areaStyleColor() {
@@ -123,69 +168,8 @@ export default {
     },
   },
   mounted() {
-    var chartDom = document.getElementById("main");
-    var myChart = echarts.init(chartDom);
-    var option;
-
-    option = {
-      tooltip: {
-        trigger: "axis",
-        position: function (pt) {
-          return [pt[0], "10%"];
-        },
-      },
-      title: {
-        left: "center",
-        text: "净值走势图",
-      },
-      toolbox: {
-        feature: {
-          dataZoom: {
-            yAxisIndex: "none",
-          },
-          restore: {},
-          saveAsImage: {},
-        },
-      },
-      xAxis: {
-        type: "category",
-        boundaryGap: false,
-        data: this.fundDate,
-      },
-      yAxis: {
-        type: "value",
-        boundaryGap: [0, "100%"],
-      },
-      dataZoom: [
-        {
-          type: "inside",
-          start: 0,
-          end: 100,
-        },
-        {
-          start: 0,
-          end: 10,
-        },
-      ],
-      series: [
-        {
-          name: this.fundName,
-          type: "line",
-          symbol: "none",
-          sampling: "lttb",
-          itemStyle: {
-            color: "#000080",
-          },
-          areaStyle: {
-            color: this.areaStyleColor,
-          },
-          data: this.fundValue,
-        },
-      ],
-    };
-
-    option && myChart.setOption(option);
-  },
+    this.fetchData();
+  }
 };
 </script>
 <style scoped>

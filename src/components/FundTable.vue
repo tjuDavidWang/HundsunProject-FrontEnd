@@ -1,113 +1,18 @@
 <template>
   <div class="table">
-    <h-table
-      :data="tData"
-      :columns="columns"
-      headAlgin="center"
-      bodyAlgin="center"
-      stripe
-      border
-    ></h-table>
-    <h-page
-      class="fund-page-button"
-      :total="totalNum"
-      @on-change="dataChange"
-      show-elevator
-      show-total
-      :page-size="5"
-    ></h-page>
-    <NavGraph
-      @close="closeModal"
-      :visible="showModal"
-      :fund="selectedFund"
-    ></NavGraph>
+    <h-table :data="tData" :columns="columns" headAlgin="center" bodyAlgin="center" stripe border></h-table>
+    <h-page class="fund-page-button" :total="totalNum" @on-change="dataChange" show-elevator show-total
+      :page-size="5"></h-page>
+    <div v-for="fund in tData" :key="fund.fundNumber">
+      <NavGraph v-if="fund.loadGraph" @close="closeModal" :visible="showModal" :fund="fund"></NavGraph>
+    </div>
   </div>
 </template>
 
 <script>
+import axios from 'axios';
 import NavGraph from "./NavGraph.vue";
-var data = [
-  {
-    fundNumber: "123452145323",
-    fundName: "恒生训练营",
-    fundType: "股票基金",
-    fundRisk: 1,
-    property: 10000.0,
-    share: 2000,
-  },
-  {
-    fundNumber: "123452145324",
-    fundName: "恒生训练营2",
-    fundType: "货币基金",
-    fundRisk: 2,
-    property: 10000.0,
-    share: 2000,
-  },
-  {
-    fundNumber: "123452145325",
-    fundName: "恒生训练营3",
-    fundType: "股票基金",
-    fundRisk: "低",
-    property: 10000.0,
-    share: 2000,
-  },
-  {
-    fundNumber: "123452145326",
-    fundName: "恒生训练营4",
-    fundType: "股票基金",
-    fundRisk: "低",
-    property: 10000.0,
-    share: 2000,
-  },
-  {
-    fundNumber: "123452145327",
-    fundName: "恒生训练营5",
-    fundType: "股票基金",
-    fundRisk: "低",
-    property: 10000.0,
-    share: 2000,
-  },
-  {
-    fundNumber: "123452145328",
-    fundName: "恒生训练营6",
-    fundType: "股票基金",
-    fundRisk: "低",
-    property: 10000.0,
-    share: 2000,
-  },
-  {
-    fundNumber: "123452145329",
-    fundName: "恒生训练营7",
-    fundType: "股票基金",
-    fundRisk: "低",
-    property: 10000.0,
-    share: 2000,
-  },
-  {
-    fundNumber: "123452145330",
-    fundName: "恒生训练营8",
-    fundType: "股票基金",
-    fundRisk: "低",
-    property: 10000.0,
-    share: 2000,
-  },
-  {
-    fundNumber: "123452145331",
-    fundName: "恒生训练营9",
-    fundType: "股票基金",
-    fundRisk: "低",
-    property: 10000.0,
-    share: 2000,
-  },
-  {
-    fundNumber: "123452145332",
-    fundName: "恒生训练营10",
-    fundType: "股票基金",
-    fundRisk: "低",
-    property: 10000.0,
-    share: 2000,
-  },
-];
+
 export default {
   name: "FundTable",
   components: {
@@ -115,8 +20,8 @@ export default {
   },
   data() {
     return {
-      tData: data.slice(0, 5),
-      totalNum: data.length,
+      tData: [],
+      totalNum: 0,
       columns: [
         {
           title: "基金代码",
@@ -135,30 +40,20 @@ export default {
           key: "fundRisk",
         },
         {
-          title: "总资产",
-          key: "property",
-        },
-        {
-          title: "总份额",
-          key: "share",
-        },
-        {
           title: "操作",
           key: "action",
           render: (h, params) => {
-            console.log(this);
             const fund = params.row;
             return h("div", [
               h(
                 "Button",
                 {
                   props: {
-                    type: "confirm",
+                    type: "ghost",
                     size: "small",
                   },
                   on: {
                     click: () => {
-                      console.log(fund);
                       this.viewFund(fund);
                     },
                   },
@@ -170,7 +65,7 @@ export default {
                 "Button",
                 {
                   props: {
-                    type: "confirm",
+                    type: "ghost",
                     size: "small",
                   },
                 },
@@ -181,12 +76,11 @@ export default {
                 "Button",
                 {
                   props: {
-                    type: "confirm",
+                    type: "ghost",
                     size: "small",
                   },
                   on: {
                     click: () => {
-                      console.log(fund);
                       this.handleDelete(fund);
                     },
                   },
@@ -199,24 +93,60 @@ export default {
       ],
       showModal: false,
       selectedFund: {},
-      curPage : 1,
+      curPage: 1,
+      allData: [],
+      loadGraph: false,
     };
   },
+  created() {
+    this.fetchData();
+  },
   methods: {
-    dataChange(i) {
-      this.tData = data.slice((i - 1) * 5, i * 5);
-      curPage = i;
+    fetchData() {
+      axios.get('http://127.0.0.1:9091/getAllProduct')
+        .then((response) => {
+          this.allData = response.data.map(fund => ({
+            ...fund,
+            loadGraph: false, // 初始化loadGraph属性为false
+          }));
+          this.tData = this.allData.slice(0, 5);
+          this.totalNum = this.allData.length;
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     },
 
+
+    dataChange(i) {
+      this.tData = data.slice((i - 1) * 5, i * 5);
+      this.curPage = i;
+    },
     viewFund(fund) {
-      console.log(fund, 123);
-      this.showModal = true;
-      this.selectedFund = fund;
+      // 在打开新的弹窗前，先确保所有的 loadGraph 都设置为 false
+      this.tData.forEach(item => {
+        if (item.loadGraph) {
+          this.$set(item, 'loadGraph', false);
+        }
+      });
+      
+      // 然后设置选择的基金的 loadGraph 为 true
+      const index = this.tData.findIndex(item => item.fundNumber === fund.fundNumber);
+      if (index !== -1) {
+        this.$set(this.tData[index], 'loadGraph', true);
+        this.showModal = true;
+        this.selectedFund = this.tData[index];
+      }
     },
     closeModal() {
-      console.log("123");
+      // 在关闭弹窗时，确保 selectedFund 的 loadGraph 设置为 false
+      const index = this.tData.findIndex(item => item.fundNumber === this.selectedFund.fundNumber);
+      if (index !== -1) {
+        this.$set(this.tData[index], 'loadGraph', false);
+      }
       this.showModal = false;
     },
+
     handleDelete(fund) {
       data.forEach((item, index) => {
         if (item.fundNumber === fund.fundNumber) {
@@ -225,6 +155,10 @@ export default {
       });
       this.totalNum = this.totalNum - 1;
       this.tData = data.slice((this.curPage - 1) * 5, this.curPage * 5);
+    },
+    dataChange(i) {
+      this.tData = this.allData.slice((i - 1) * 5, i * 5);
+      this.curPage = i;
     },
   },
 };
