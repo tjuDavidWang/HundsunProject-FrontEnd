@@ -79,13 +79,8 @@ export default {
     created() {
         this.fetchTime();
         this.fetchData().then(currentDayData => {
-            let previousDate = new Date(this.CurDate);
-            previousDate.setDate(previousDate.getDate() - 1); // Subtract one day
-            let year = previousDate.getFullYear();
-            let month = ("0" + (previousDate.getMonth() + 1)).slice(-2);
-            let day = ("0" + previousDate.getDate()).slice(-2);
-            let previousDayDateString = `${year}-${month}-${day}`;
-            this.fetchPreviousDayData(previousDayDateString, currentDayData);
+            let previousDate = this.getPreviousWorkingDay(this.CurDate); // Get previous working day
+            this.fetchPreviousDayData(previousDate, currentDayData);
         });
     },
     methods: {
@@ -109,6 +104,17 @@ export default {
                 .catch((error) => {
                     console.log(error);
                 });
+        },
+        getPreviousWorkingDay(dateString) {
+            let previousDate = new Date(dateString);
+            do {
+                previousDate.setDate(previousDate.getDate() - 1); // Subtract one day
+            } while (previousDate.getDay() === 0 || previousDate.getDay() === 6); // Skip weekends
+
+            let year = previousDate.getFullYear();
+            let month = ("0" + (previousDate.getMonth() + 1)).slice(-2);
+            let day = ("0" + previousDate.getDate()).slice(-2);
+            return `${year}-${month}-${day}`;
         },
         fetchPreviousDayData(previousDayDateString, currentDayData) {
             axios.get(`http://127.0.0.1:9091/getDailyValueByDate?fund_date=${previousDayDateString}`)
