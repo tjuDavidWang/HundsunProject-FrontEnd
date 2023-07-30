@@ -72,9 +72,11 @@
           ></template>
         </div>
         <div>
-          <h-form-item v-if="Number(invester.bank_num) > 0&&Number(invester.bank_num)<=5">
-            <h-button class="next" type="primary">下一步</h-button>
-          </h-form-item>
+          <router-link to="/Questionnaires">
+            <h-form-item v-if="Number(invester.bank_num) > 0 && Number(invester.bank_num) <= 5">
+              <h-button class="next" type="primary">下一步</h-button>
+            </h-form-item>
+          </router-link>
         </div>
       </h-form>
     </div>
@@ -210,3 +212,4 @@ export default {
   margin-top:3vw;
 }
 </style>
+

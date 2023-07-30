@@ -28,6 +28,10 @@ function Purchase() {
   return import(/* webpackChunkName: "Subscription" */ '@/components/Subscription.vue')
 }
 
+function Redeem() {
+  return import(/* webpackChunkName: "Redemption" */ '@/components/Redemption.vue')
+}
+
 function ListCustomers() {
   return import(/* webpackChunkName: "CustomerTable" */ '@/components/CustomerTable.vue')
 }
@@ -59,7 +63,7 @@ const routes = [
       {
         name: 'redeem',
         path: 'redeem',
-        component: TestB,
+        component: Redeem,
       },
       {
         name: 'ListCustomers',

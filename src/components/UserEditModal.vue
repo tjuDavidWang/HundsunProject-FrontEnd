@@ -3,7 +3,7 @@
     v-model="editVisible"
     :escClose="true"
     title="顾客信息"
-    @on-ok="closeModal"
+    @on-ok="saveAndClose"
     @on-cancel="closeModal"
     @on-close="closeModal"
     :beforeEscClose="beforetest"
@@ -45,6 +45,7 @@
 </template>
 
 <script>
+import axios from "axios";
 export default {
   name: "UserInfoModal",
   props: {
@@ -61,6 +62,10 @@ export default {
         {
           value: "机构",
           label: "机构",
+        },
+        {
+          value: "公司",
+          label: "公司",
         },
       ],
       certificate_type: [
@@ -79,6 +84,10 @@ export default {
         {
           value: "护照",
           label: "护照",
+        },
+        {
+          value: "公司证件",
+          label: "公司证件",
         },
       ],
       bank_List: [
@@ -104,6 +113,26 @@ export default {
   methods: {
     closeModal() {
       this.$emit("closeEdit");
+    },
+    saveAndClose() {
+
+      axios
+        .patch(
+          `http://127.0.0.1:9091/modifyInvester?user_type=${encodeURIComponent(
+            this.editUser.type
+          )}&user_name=${encodeURIComponent(
+            this.editUser.name
+          )}&cer_type=${encodeURIComponent(this.editUser.cerType)}&cer_number=${encodeURIComponent(
+            this.editUser.ID)
+          }&risk_grade=${this.editUser.riskLevel}`
+        )
+        .then((response) => {
+          
+          this.closeModal();
+        })
+        .catch((error) => {
+          console.error("修改失败:", error);
+        });
     },
   },
 };

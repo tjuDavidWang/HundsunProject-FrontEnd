@@ -5,7 +5,7 @@
         <br><br>
         <div class="button-row">
             <h-button type="primary" icon="time" @click="UpdateTime">更新时间</h-button>
-            <span style="width:8em"><b>当前日期：</b></span>
+            <span style="width:10em"><b>当前日期：</b></span>
             <h-fast-date :value="CurDate" format="yyyy-MM-dd" type="date" placeholder="当前日期"></h-fast-date>
             <h-button :type="type" icon="refresh" :disabled="disableUpdate" @click="UpdateValue" :loading="loading1">
                 <span v-if="!loading1">{{ text2 }}</span>
@@ -18,66 +18,15 @@
             </h-button>
         </div>
 
-        <h-table :data="tData" :row-class-name="rowClassName" :columns="columns" headAlgin="center" bodyAlgin="center"
-            style="margin:10px;" stripe></h-table>
+        <h-table :data="tData" :columns="columns" headAlgin="center" bodyAlgin="center" style="margin:10px;"
+            stripe></h-table>
 
         <h-page :total="totalNum" @on-change="dataChange" show-elevator show-total :page-size="10"
             style="margin:10%;"></h-page>
     </div>
 </template>
 <script>
-var data = [
-    {
-        fundNumber: "123452145323",
-        fundName: "恒生训练营",
-        fundValue: 3.5,
-    },
-    {
-        fundNumber: "123452145324",
-        fundName: "恒生训练营2",
-        fundValue: 2.3,
-    },
-    {
-        fundNumber: "123452145325",
-        fundName: "恒生训练营3",
-        fundValue: 1.7,
-    },
-    {
-        fundNumber: "123452145326",
-        fundName: "恒生训练营4",
-        fundValue: 4.2,
-    },
-    {
-        fundNumber: "123452145327",
-        fundName: "恒生训练营5",
-        fundValue: 2.9,
-    },
-    {
-        fundNumber: "123452145328",
-        fundName: "恒生训练营6",
-        fundValue: 3.1,
-    },
-    {
-        fundNumber: "123452145329",
-        fundName: "恒生训练营7",
-        fundValue: 2.6,
-    },
-    {
-        fundNumber: "123452145330",
-        fundName: "恒生训练营8",
-        fundValue: 3.8,
-    },
-    {
-        fundNumber: "123452145331",
-        fundName: "恒生训练营9",
-        fundValue: 2.4,
-    },
-    {
-        fundNumber: "123452145332",
-        fundName: "恒生训练营10",
-        fundValue: 3.0,
-    }
-];
+import axios from 'axios';
 var columns = [
     {
         title: "产品代码",
@@ -91,13 +40,27 @@ var columns = [
         title: "产品净值",
         key: "fundValue",
     },
+    {
+        title: "日增长率",
+        key: "growthRate",
+        render: (h, params) => {
+            let color = params.row.growthRate >= 0 ? 'red' : 'green';
+            let arrow = params.row.growthRate >= 0 ? '↑' : '↓';
+            return h('div', {
+                style: {
+                    color: color,
+                }
+            }, arrow + ' ' + (params.row.growthRate * 100).toFixed(2) + '%');
+        },
+    },
+
 ];
 export default {
     data() {
         return {
-            tData: data.slice(0, 10),
+            tData: [],
             columns: columns,
-            totalNum: data.length,
+            totalNum: 0,
 
             CurDate: "2023-07-31",
 
@@ -113,9 +76,65 @@ export default {
             disabled: true,
         };
     },
+    created() {
+        this.fetchTime();
+        this.fetchData().then(currentDayData => {
+            let previousDate = this.getPreviousWorkingDay(this.CurDate); // Get previous working day
+            this.fetchPreviousDayData(previousDate, currentDayData);
+        });
+    },
     methods: {
+        fetchTime() {
+            axios.get('http://127.0.0.1:9091/getTime')
+                .then((response) => {
+                    this.CurDate = response.data.substring(0, 10);
+                    console.log(this.CurDate);
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+        },
+        fetchData() {
+            return axios.get(`http://127.0.0.1:9091/getDailyValueByDate?fund_date=${this.CurDate}`)
+                .then((response) => {
+                    this.tData = response.data;
+                    this.totalNum = this.tData.length;
+                    return this.tData; // Return the fetched data
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+        },
+        getPreviousWorkingDay(dateString) {
+            let previousDate = new Date(dateString);
+            do {
+                previousDate.setDate(previousDate.getDate() - 1); // Subtract one day
+            } while (previousDate.getDay() === 0 || previousDate.getDay() === 6); // Skip weekends
+
+            let year = previousDate.getFullYear();
+            let month = ("0" + (previousDate.getMonth() + 1)).slice(-2);
+            let day = ("0" + previousDate.getDate()).slice(-2);
+            return `${year}-${month}-${day}`;
+        },
+        fetchPreviousDayData(previousDayDateString, currentDayData) {
+            axios.get(`http://127.0.0.1:9091/getDailyValueByDate?fund_date=${previousDayDateString}`)
+                .then((response) => {
+                    let previousDayData = response.data;
+                    this.tData = currentDayData.map((item, i) => {
+                        const previousDayValue = previousDayData[i] ? previousDayData[i].fundValue : item.fundValue;
+                        let growthRate = ((item.fundValue - previousDayValue) / previousDayValue).toFixed(4);
+                        return {
+                            ...item,
+                            growthRate: growthRate,
+                        }
+                    });
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+        },
         dataChange(i) {
-            this.tData = data.slice((i - 1) * 5, i * 5);
+            this.fetchData();
         },
         toLoading() {
             this.loading2 = true;
@@ -143,6 +162,15 @@ export default {
             this.text3 = "清算";
             this.text2 = "更新净值";
             this.type = "primary";
+
+            // 更新时间
+            axios.get('http://127.0.0.1:9091/updateTime')
+                .then(() => {
+                    this.fetchTime();  // Fetch the updated time
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
         },
         UpdateValue() {
             this.loading1 = true;

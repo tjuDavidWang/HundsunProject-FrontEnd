@@ -1,15 +1,13 @@
 <template>
-    <div class="purchase-page">
+    <div class="redeem-page">
         <div>
             <h-form ref="invester" :model="invester" :rules="rule_invester" :label-width="100" inline>
                 <h-form-item prop="cer_number" label="投资人查询">
                     <h-input v-model="invester.cer_number" size="large" icon="close" placeholder="请输入当前投资人证件号码"
                         style="width:56vw" @on-click="invester.cer_number = onclick()"></h-input>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                     <h-button type="primary" @click="findi_Submit('invester')">查询</h-button>
-                    <!--h-msg-box v-model="i_click" :escClose="true" title="投资人查询失败" @on-ok="ok" @on-cancel="cancel" :beforeEscClose="beforetest"></h-msg-box-->
                     <h-msg-box v-model="i_click" width="360">
                         <p slot="header" style="color: #f60; text-align: center;"><h-icon name="warning"></h-icon><span>投资人查询失败</span></p>
-                        <!--div style="text-align: center;"><p>此任务删除后，下游 10 个任务将无法执行。</p><p>是否继续删除？</p></div-->
                         <div slot="footer"><h-button type="error" size="large" long @click="i_click = cancel()">取消</h-button></div>
                     </h-msg-box>
                 </h-form-item>
@@ -36,7 +34,6 @@
                     <!--span class="demo-data">{{ invester.bank_card }}</span-->
                 </h-form-item>
             </h-form>
-
             <h-form ref="bank_card" :model="bank_card" :label-width="100" inline>
                 <h-form-item prop="bank_name" label="银行名称">
                     <h-input v-model="bank_card.bank_name" :readonly="true" size="large" style="width: 25vw;"></h-input>
@@ -45,7 +42,6 @@
                     <h-input v-model="bank_card.card_balance" :readonly="true" size="large" style="width: 25vw;"></h-input>
                 </h-form-item>
             </h-form>
-
             <h-form ref="fund_product" :model="fund_product" :rules="rule_fund_product" :label-width="100" inline>
                 <h-form-item prop="fund_number" label="基金代码">
                     <h-input v-model="fund_product.fund_number" size="large" icon="close" placeholder="请输入当前基金产品代码"
@@ -66,22 +62,21 @@
                     <h-input v-model="fund_product.fund_risk" :readonly="true" size="large" style="width: 25vw;"></h-input>
                 </h-form-item>
             </h-form>
-
-            <h-form ref="subcription" :model="subcription" :rules="rule_subcription" :label-width="100" inline>
-                <h-form-item prop="sub_amount" label="申购金额">
-                    <h-input v-model="subcription.sub_amount" size="large" icon="close" placeholder="请输入当前银行卡对基金产品的认购金额"
-                        style="width:56vw;" @on-click="subcription.sub_amount = onclick()"></h-input>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                    <h-button type="primary"  @click="s_click = true">认购</h-button>
-                    <h-msg-box v-model="s_click" :escClose="true" title="确认申购吗？" @on-ok="handleSubmit('subcription')" @on-cancel="cancel" :beforeEscClose="beforetest"></h-msg-box>
-                    <h-msg-box v-model="ss_click" width="360">
-                        <p slot="header" style="color: #0a6; text-align: center;"><h-icon name="success"></h-icon><span>申购成功</span></p>
+            <h-form ref="redemption" :model="redemption" :rules="rule_redemption" :label-width="100" inline>
+                <h-form-item prop="red_share" label="赎回份额">
+                    <h-input v-model="redemption.red_share" size="large" icon="close" placeholder="请输入当前银行卡对基金产品的赎回份额"
+                        style="width:56vw;" @on-click="redemption.red_share = onclick()"></h-input>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <h-button type="primary"  @click="r_click = true">赎回</h-button>
+                    <h-msg-box v-model="r_click" :escClose="true" title="确认赎回吗？" @on-ok="handleSubmit('redemption')" @on-cancel="cancel" :beforeEscClose="beforetest"></h-msg-box>
+                    <h-msg-box v-model="rs_click" width="360">
+                        <p slot="header" style="color: #0a6; text-align: center;"><h-icon name="success"></h-icon><span>赎回成功</span></p>
                         <div style="text-align: center;"><p>此任务删除后，下游 10 个任务将无法执行。</p><p>是否继续删除？</p></div>
-                        <div slot="footer"><h-button type="success" size="large" long @click="ss_click = cancel()">确定</h-button></div>
+                        <div slot="footer"><h-button type="success" size="large" long @click="rs_click = cancel()">确定</h-button></div>
                     </h-msg-box>
-                    <h-msg-box v-model="sf_click" width="360">
-                        <p slot="header" style="color: #f60; text-align: center;"><h-icon name="warning"></h-icon><span>申购失败</span></p>
+                    <h-msg-box v-model="rf_click" width="360">
+                        <p slot="header" style="color: #f60; text-align: center;"><h-icon name="warning"></h-icon><span>赎回失败</span></p>
                         <div style="text-align: center;"><p>此任务删除后，下游 10 个任务将无法执行。</p><p>是否继续删除？</p></div>
-                        <div slot="footer"><h-button type="error" size="large" long @click="sf_click = cancel()">取消</h-button></div>
+                        <div slot="footer"><h-button type="error" size="large" long @click="rf_click = cancel()">取消</h-button></div>
                     </h-msg-box>
                 </h-form-item>
             </h-form>
@@ -152,22 +147,22 @@ export default {
                     { required: true, message: "请填写基金产品代码", trigger: "blur" },
                 ],
             },
-            subcription: {
+            redemption: {
                 cer_number: "",
                 bank_card: "",
                 fund_number: "",
-                sub_amount: "",
+                red_share: "",
             },
-            rule_subcription: {
-                sub_amount: [
-                    { required: true, message: "请填写认购金额", trigger: "blur" },
+            rule_redemption: {
+                red_share: [
+                    { required: true, message: "请填写赎回份额", trigger: "blur" },
                 ],
             },
             i_click: false,
             f_click: false,
-            s_click: false,
-            ss_click: false,
-            sf_click: false,
+            r_click: false,
+            rs_click: false,
+            rf_click: false,
         };
     },
     methods: {
@@ -210,7 +205,7 @@ export default {
             this.$refs[name].validate((valid) => {
                 if (valid) {
                     this.$hMessage.success("提交成功!");
-                    this.ss_click = true;
+                    this.rf_click = true;
                     /*if(invester.cer_number){
                         a
                     } else {
@@ -253,7 +248,7 @@ export default {
     padding-left: 100px;
 }
 
-.purchase-page {
+.redeem-page {
     width: 100%;
     padding-left: 5vw;
     padding-top: 10%;
