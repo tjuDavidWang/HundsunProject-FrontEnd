@@ -43,7 +43,9 @@ function Liquidate() {
 function AddCustomer() {
   return import(/* webpackChunkName: "UserCreate" */ '@/components/UserCreate.vue')
 }
-
+function Questionnaires(){
+  return import(/* webpackChunkName: "Questionnaires" */ '@/components/Questionnaires.vue')
+}
 
 const routes = [
   {
@@ -85,6 +87,11 @@ const routes = [
         name: 'Liquidate',
         path: 'Liquidate',
         component: Liquidate,
+      },
+      {
+        name: 'Questionnaires',
+        path: 'Questionnaires',
+        component: Questionnaires,
       }
     ],
   },

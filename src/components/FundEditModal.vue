@@ -1,9 +1,9 @@
 <template>
-  <h-msg-box v-model="editVisible" :escClose="true" title="产品信息" @on-ok="closeModal" @on-cancel="closeModal"
+  <h-msg-box v-model="editVisible" :escClose="true" title="产品信息" @on-ok="saveAndClose" @on-cancel="closeModal"
     @on-close="closeModal" width="30vw">
     <h-form :label-width="100" inline>
 
-      <h-form-item label="基金代码" >
+      <h-form-item label="基金代码">
         <h-input v-model="editFund.fundNumber" size="large" disabled></h-input>
       </h-form-item>
 
@@ -29,6 +29,7 @@
 </template>
 
 <script>
+import axios from "axios"
 export default {
   name: "FundEditModal",
   props: {
@@ -79,6 +80,18 @@ export default {
     closeModal() {
       this.$emit("closeEdit");
     },
+    saveAndClose() {
+      axios.patch(`http://127.0.0.1:9091/modifyProduct?fund_number=${this.editFund.fundNumber}&fund_name=${encodeURIComponent(this.editFund.fundName)}&fund_type=${encodeURIComponent(this.editFund.fundType)}&fund_risk=${this.editFund.fundRisk}`)
+        .then(response => {
+          // 请求成功，关闭模态框
+          this.closeModal();
+        })
+        .catch(error => {
+          // 请求失败，可以在此处添加错误处理逻辑
+          console.error("修改失败:", error);
+        });
+    },
+    // ...
   },
   computed: {
     selectedRiskLevel: {
