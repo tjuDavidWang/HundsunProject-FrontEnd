@@ -5,8 +5,10 @@
         <br><br>
         <div class="button-row">
             <h-button type="primary" icon="time" @click="UpdateTime">更新时间</h-button>
+
             <span style="width:10em"><b>当前日期：</b></span>
             <h-fast-date :value="CurDate" format="yyyy-MM-dd" type="date" placeholder="当前日期"></h-fast-date>
+
             <h-button :type="type" icon="refresh" :disabled="disableUpdate" @click="UpdateValue" :loading="loading1">
                 <span v-if="!loading1">{{ text2 }}</span>
                 <span v-else>Loading...</span>
@@ -143,15 +145,33 @@ export default {
         },
         toLoading() {
             this.loading2 = true;
-            setTimeout(() => {
-                this.loading2 = false;
-                this.icon = "checkmark-round";
-                this.text3 = "当日清算已完成";
+            const startTime = new Date().getTime(); // 记录开始时间
 
-                this.disabled = true;
-                this.disableUpdate = true;
+            // 这是一个延迟的Promise，例如3000毫秒
+            const delayPromise = new Promise(resolve => setTimeout(resolve, 3000));
 
-            }, 3000);
+            // 这是一个包括两个请求的Promise链
+            const requestPromise = axios.patch('http://127.0.0.1:9091/settlement/sub')
+                .then(() => axios.patch('http://127.0.0.1:9091/settlement/red'));
+
+            Promise.all([delayPromise, requestPromise])
+                .then(() => {
+                    const endTime = new Date().getTime(); // 记录结束时间
+                    const requestTime = endTime - startTime; // 计算请求所花费的时间
+
+                    this.loading2 = false;
+                    this.icon = "checkmark-round";
+                    this.text3 = "当日清算已完成";
+                    this.disabled = true;
+                    this.disableUpdate = true;
+                })
+                .catch((error) => {
+                    // 请求失败，可以在此处添加错误处理逻辑
+                    console.error("清算失败:", error);
+                    this.loading2 = false;
+                    this.icon = "exclamation-mark-round";
+                    this.text3 = "清算失败，请重试";
+                });
         },
         UpdateTime() {
             let currentDate = new Date(this.CurDate);
@@ -179,14 +199,41 @@ export default {
         },
         UpdateValue() {
             this.loading1 = true;
-            setTimeout(() => {
-                this.loading1 = false;
-                this.icon = "checkmark-round";
-                this.text2 = "净值已更新";
-                this.type = "success";
-                this.disabled = false;
-            }, 3000);
+            const startTime = new Date().getTime(); // 记录请求开始时间
+
+            // 这是一个延迟的Promise
+            const delayPromise = new Promise(resolve => setTimeout(resolve, 2000)); // 假设延迟3000毫秒
+
+            // 这是一个请求的Promise
+            const requestPromise = axios.get('http://127.0.0.1:9091/updateDailyValue');
+
+            Promise.all([delayPromise, requestPromise])
+                .then(() => {
+                    const endTime = new Date().getTime(); // 记录请求结束时间
+                    const requestTime = endTime - startTime; // 计算请求所花费的时间
+
+                    this.loading1 = false;
+                    this.icon = "checkmark-round";
+                    this.text2 = "净值已更新";
+                    this.type = "success";
+                    this.disabled = false;
+
+                    // 成功更新净值后，重新获取数据并展示
+                    this.fetchData().then(currentDayData => {
+                        let previousDate = this.getPreviousWorkingDay(this.CurDate); // Get previous working day
+                        this.fetchPreviousDayData(previousDate, currentDayData);
+                    });
+                })
+                .catch((error) => {
+                    console.log(error);
+
+                    this.loading1 = false;
+                    this.text2 = "更新失败";
+                    this.type = "danger";
+                });
         }
+
+
     },
 };
 </script>
