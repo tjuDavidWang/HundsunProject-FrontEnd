@@ -88,7 +88,6 @@ export default {
             axios.get('http://127.0.0.1:9091/getTime')
                 .then((response) => {
                     this.CurDate = response.data.substring(0, 10);
-                    console.log(this.CurDate);
                 })
                 .catch((error) => {
                     console.log(error);
@@ -97,7 +96,12 @@ export default {
         fetchData() {
             return axios.get(`http://127.0.0.1:9091/getDailyValueByDate?fund_date=${this.CurDate}`)
                 .then((response) => {
-                    this.tData = response.data;
+                    this.tData = response.data.map(item => ({
+                        fundName: item.fundName,
+                        fundNumber: item.dailyValue.fundNumber,
+                        fundValue: item.dailyValue.fundValue,
+                        fundDate: item.dailyValue.fundDate,
+                    }));
                     this.totalNum = this.tData.length;
                     return this.tData; // Return the fetched data
                 })
@@ -119,9 +123,9 @@ export default {
         fetchPreviousDayData(previousDayDateString, currentDayData) {
             axios.get(`http://127.0.0.1:9091/getDailyValueByDate?fund_date=${previousDayDateString}`)
                 .then((response) => {
-                    let previousDayData = response.data;
+                    let previousDayData = response.data.map(item => item.dailyValue.fundValue);
                     this.tData = currentDayData.map((item, i) => {
-                        const previousDayValue = previousDayData[i] ? previousDayData[i].fundValue : item.fundValue;
+                        const previousDayValue = previousDayData[i] ? previousDayData[i] : item.fundValue;
                         let growthRate = ((item.fundValue - previousDayValue) / previousDayValue).toFixed(4);
                         return {
                             ...item,
@@ -133,6 +137,7 @@ export default {
                     console.log(error);
                 });
         },
+
         dataChange(i) {
             this.fetchData();
         },
