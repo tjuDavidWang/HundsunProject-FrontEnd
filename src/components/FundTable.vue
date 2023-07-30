@@ -148,12 +148,8 @@ export default {
       this.curPage = i;
     },
     addFund(newFund) {
-      let newF = JSON.parse(JSON.stringify(newFund));
-      this.allData.push(newF); // Updated from data to this.allData
-      console.log(this.curPage);
       this.showCreateModal = false;
-      this.totalNum = this.totalNum + 1;
-      this.tData = this.allData.slice((this.curPage - 1) * 10, this.curPage * 10); // Updated from data to this.allData
+      this.fetchData();
     },
     viewFund(fund) {
       // 在打开新的弹窗前，先确保所有的 loadGraph 都设置为 false
@@ -193,19 +189,20 @@ export default {
       this.showCreateModal = false;
     },
     handleDelete(fund) {
-      this.allData.forEach((item, index) => {
-        if (item.fundNumber === fund.fundNumber) {
-          this.allData.splice(index, 1);
-        }
-      });
-      this.totalNum = this.totalNum - 1;
-      this.tData = this.allData.slice((this.curPage - 1) * 10, this.curPage * 10); // Updated from data to this.allData
-    },
+      // 从传入的基金数据中获取基金编号
+      const fundNumber = fund.fundNumber;
 
-    dataChange(i) {
-      this.tData = this.allData.slice((i - 1) * 10, i * 10);
-      this.curPage = i;
-    },
+      // 发送DELETE请求删除产品
+      axios.delete('http://127.0.0.1:9091/deleteProduct', { params: { fund_number: fundNumber } })
+        .then(() => {
+          this.fetchData();
+        })
+        .catch(error => {
+          // 处理删除失败的情况
+          console.error('产品删除失败:', error);
+        });
+    }
+
   },
 };
 </script>
