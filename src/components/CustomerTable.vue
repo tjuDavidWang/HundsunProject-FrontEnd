@@ -26,12 +26,18 @@
       :visible="showModal"
       :user="selectedUser"
     ></UserInfoModal>
+
+    <UserEditModal
+      @closeEdit="closeEditModal"
+      :editVisible="showEditModal"
+      :editUser="editedUser"
+    ></UserEditModal>
   </div>
 </template>
 
 <script>
 import UserInfoModal from "./UserInfoModal.vue";
-import UserEditModal from "./UserEditModal.vue"
+import UserEditModal from "./UserEditModal.vue";
 
 var data = [
   {
@@ -180,6 +186,12 @@ export default {
                     type: "confirm",
                     size: "small",
                   },
+                  on: {
+                    click: () => {
+                      console.log(user);
+                      this.editUser(user);
+                    },
+                  },
                 },
                 "编辑"
               ),
@@ -206,7 +218,9 @@ export default {
       ],
       totalNum: data.length,
       showModal: false,
+      showEditModal: false,
       selectedUser: {},
+      editedUser: {},
       curPage: 1,
     };
   },
@@ -224,9 +238,17 @@ export default {
       this.showModal = true;
       this.selectedUser = user;
     },
+    editUser(user) {
+      console.log(user,123);
+      this.showEditModal = true;
+      this.editedUser = user;
+    },
     closeModal() {
       console.log("123");
       this.showModal = false;
+    },
+    closeEditModal(){
+      this.showEditModal = false;
     },
     handleDelete(user) {
       data.forEach((item, index) => {
