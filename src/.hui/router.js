@@ -48,6 +48,7 @@ function AddCustomer() {
 const routes = [
   {
     path: '/',
+    redirect: '/home', // 添加这一行来重定向根路径到home路径
     component: Index,
     children: [
       {
