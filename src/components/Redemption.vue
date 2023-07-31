@@ -137,14 +137,14 @@ export default {
                     { required: true, message: "请填写投资人证件号码", trigger: "blur" },
                     {
                         type: "string",
-                        min: 5,
-                        message: "身份证号长度不能小于5位",
+                        min: 1,
+                        message: "身份证号长度不能小于1位",
                         trigger: "blur",
                     },
                     {
                         type: "string",
-                        max: 18,
-                        message: "身份证号长度不能大于18位",
+                        max: 20,
+                        message: "身份证号长度不能大于20位",
                         trigger: "blur",
                     },
                 ],
@@ -173,7 +173,7 @@ export default {
             },
             rule_redemption: {
                 red_share: [
-                    { required: true, pattern: new RegExp(/^[1-9]\d*(?:\.\d*)?$/, "g"), message: "请填写赎回份额", trigger: "blur" },
+                    { required: true, pattern: new RegExp(/^[0-9]\d*(?:\.\d*)?$/, "g"), message: "请填写赎回份额", trigger: "blur" },
                 ],
             },
             i_click: false,
@@ -393,7 +393,7 @@ export default {
                 });
         },
         handleSubmit() {
-            if (this.fund_product.fund_number && this.invester.cer_number && this.bank_card.bank_card && this.redemption.red_share) {
+            if (this.fund_product.fund_number && this.invester.cer_number && this.bank_card.bank_card && this.redemption.red_share && this.fund_product.fund_name) {
                 this.redemption.fund_number = this.fund_product.fund_number;
                 this.redemption.bank_card = this.bank_card.bank_card;
                 this.redemption.cer_number = this.invester.cer_number;
