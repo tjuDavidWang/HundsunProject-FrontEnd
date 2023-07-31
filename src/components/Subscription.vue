@@ -78,7 +78,7 @@
                     <h-msg-box v-model="s_click" :escClose="true" title="确认申购吗？" @on-ok="handleSubmit()" @on-cancel="cancel" :beforeEscClose="beforetest"></h-msg-box>
                     <h-msg-box v-model="ss_click" width="360">
                         <p slot="header" style="color: #0a6; text-align: center;"><h-icon name="success"></h-icon><span>申购成功</span></p>
-                        <div style="text-align: center;"><p>成交金额</p><p>清空信息重新申购</p></div>
+                        <div style="text-align: center;"><p>成交金额：{{subcription.sub_amount}}</p><p>清空信息重新申购</p></div>
                         <div slot="footer"><h-button type="success" size="large" long @click="ss_click = cancel()">确定</h-button></div>
                     </h-msg-box>
                     <h-msg-box v-model="sf_click1" width="360">
@@ -374,7 +374,7 @@ export default {
                 this.subcription.bank_card = this.bank_card.bank_card;
                 this.subcription.cer_number = this.invester.cer_number;
                 this.subcription.sub_amount = this.subcription.sub_amount;
-                if(this.invester.risk_grade === this.fund_product.fund_risk && this.bank_card.card_balance > this.subcription.sub_amount){
+                if(this.invester.risk_grade >= this.fund_product.fund_risk && this.bank_card.card_balance >= this.subcription.sub_amount){
                     this.ss_click = true;
                     this.createSubscription();
                 } else {

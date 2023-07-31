@@ -76,7 +76,7 @@
                     <h-msg-box v-model="r_click" :escClose="true" title="确认赎回吗？" @on-ok="handleSubmit()" @on-cancel="cancel" :beforeEscClose="beforetest"></h-msg-box>
                     <h-msg-box v-model="rs_click" width="360">
                         <p slot="header" style="color: #0a6; text-align: center;"><h-icon name="success"></h-icon><span>赎回成功</span></p>
-                        <div style="text-align: center;"><p>成交份额</p><p>清空信息重新赎回</p></div>
+                        <div style="text-align: center;"><p>成交份额：{{redemption.red_share}}</p><p>清空信息重新赎回</p></div>
                         <div slot="footer"><h-button type="success" size="large" long @click="rs_click = cancel()">确定</h-button></div>
                     </h-msg-box>
                     <h-msg-box v-model="rf_click1" width="360">
