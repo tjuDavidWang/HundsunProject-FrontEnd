@@ -1,23 +1,42 @@
 <template>
   <div class="container">
-    <h1 class>{{ questionnaireTitle }}</h1>
-    <form>
-      <div v-for="(question, index) in questions" :key="index" class="question">
-        <h3 class="qst">{{ index + 1 + "." + question.text }}</h3>
-        <div v-for="(option, optionIndex) in question.options" :key="optionIndex">
-          <input type="radio" :id="`question-${index}-option-${optionIndex}`" :value="option.value"
-            v-model="answers[index]" />
-          <label class="opt" :for="`question-${index}-option-${optionIndex}`">{{
-            option.label
-          }}</label>
+    <h1 class="title">{{ questionnaireTitle }}</h1>
+    <div class="scrollable-container">
+      <form>
+        <div
+          v-for="(question, index) in questions"
+          :key="index"
+          class="question"
+        >
+          <h3 class="qst">{{ index + 1 + "." + question.text }}</h3>
+          <div
+            v-for="(option, optionIndex) in question.options"
+            :key="optionIndex"
+            class="option-container"
+          >
+            <input
+              type="radio"
+              :id="`question-${index}-option-${optionIndex}`"
+              :value="option.value"
+              v-model="answers[index]"
+            />
+            <label
+              class="opt"
+              :for="`question-${index}-option-${optionIndex}`"
+              >{{ option.label }}</label
+            >
+          </div>
         </div>
-      </div>
-      <button @click="submitAnswers">提交</button>
-    </form>
+        <router-link to="/ListCustomers">
+          <h-button class="sub-button" @click="submitAnswers" type="info">提交</h-button>
+        </router-link>
+      </form>
+    </div>
   </div>
 </template>
-  
+
 <script>
+import axios from "axios";
 export default {
   data() {
     return {
@@ -115,29 +134,84 @@ export default {
       else if (goal >= 7 && goal <= 9) this.customerFunds = 3;
       else if (goal >= 10 && goal <= 11) this.customerFunds = 4;
       else if (goal >= 12) this.customerFunds = 5;
+      console.log(this.investorInfo);
+      axios
+        .post(
+          `http://127.0.0.1:9091/createInvester?user_type=${encodeURIComponent(
+            this.investorInfo.user_type
+          )}&user_name=${encodeURIComponent(
+            this.investorInfo.user_name
+          )}&cer_type=${encodeURIComponent(
+            this.investorInfo.cer_type
+          )}&cer_number=${this.investorInfo.cer_number}&risk_grade=${
+            this.customerFunds
+          }`
+        )
+
+        .then((respone) => {
+          console.log(respone);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     },
   },
   created() {
     this.investorInfo = this.$route.query;
-  }
+    console.log(this.investorInfo);
+  },
 };
 </script>
-  
+
 <style>
+.title {
+
+  margin-top: 3%;
+  margin-block: 3%;
+}
+
 .container {
   display: flex;
   justify-content: center;
   align-items: center;
   flex-direction: column;
+  margin-top: 1vh;
+  height: 100%;
+  width: 100%;
+}
+.scrollable-container {
+  align-items: center;
+  justify-content: center;
+  height: 80vh;
+  width:100%;
+  overflow-y: auto;
+  flex-direction: column;
+}
+.question {
+  margin-left: 35%;
+}
+.qst {
+  font-size: 15px;
+  font-family: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif;
+  text-align: left;
+  margin-left: 10%;
 }
 
-.qst {
-  font-size: 1.5vw;
-  font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+.option-container {
+  display: flex;
+  align-items: center;
+  margin-left: 12%;
 }
 
 .opt {
-  font-size: 1vw;
-  font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+  font-size: 10px;
+  font-family: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif;
+  text-align: left;
+  margin-left: 2%;
+}
+
+.sub-button {
+  margin-top: 1%;
+  margin-left: 45%
 }
 </style>

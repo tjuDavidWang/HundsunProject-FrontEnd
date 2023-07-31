@@ -1,7 +1,29 @@
 <template>
   <div class="table">
     <h1>客户列表</h1>
+
+    <div class="search-container">
+      <h-form>
+        <h-form-item class="search" prop="key">
+          <h-input
+            v-model="keyValue"
+            placeholder="请输入关键字"
+            style="width: 10vw"
+          >
+          </h-input>
+          <h-button
+            @click="searchCus"
+            type="primary"
+            shape="circle"
+            icon="search"
+            >搜索</h-button
+          >
+        </h-form-item>
+      </h-form>
+    </div>
+
     <h-table
+      class="cus-table"
       border
       stripe
       size="large"
@@ -18,7 +40,7 @@
       show-elevator
       show-total
       fastArrival
-      page-size="5"
+      page-size="10"
     ></h-page>
 
     <UserInfoModal
@@ -48,6 +70,7 @@ export default {
   },
   data() {
     return {
+      keyValue: "",
       tData: [],
       columns: [
         {
@@ -140,6 +163,48 @@ export default {
     };
   },
   methods: {
+    searchCus() {
+      this.tData = [];
+      let d = {};
+      this.totalNum = 0;
+      axios
+        .get(`http://127.0.0.1:9091/search/invester/name?key=${this.keyValue}`)
+        .then((response) => {
+          response.data.forEach((item) => {
+            d.name = item.userName;
+            d.type = item.userType;
+            d.ID = item.cerNumber;
+            d.cerType = item.cerType;
+            d.riskLevel = item.riskGrade;
+            this.tData.push(d);
+            d = {};
+            this.totalNum++;
+            console.log(d);
+          });
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+      axios
+        .get(
+          `http://127.0.0.1:9091/search/invester/name?number=${this.keyValue}`
+        )
+        .then((response) => {
+          response.data.forEach((item) => {
+            d.name = item.userName;
+            d.type = item.userType;
+            d.ID = item.cerNumber;
+            d.cerType = item.cerType;
+            d.riskLevel = item.riskGrade;
+            this.tData.push(d);
+            d = {};
+            this.totalNum++;
+          });
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    },
     numChange(value) {
       console.log(value);
     },
@@ -233,6 +298,11 @@ export default {
 </script>
 
 <style>
+.search-container {
+  display: flex;
+  justify-content: flex-end;
+}
+
 .table {
   width: 80vw;
   padding: 3% 5%;
