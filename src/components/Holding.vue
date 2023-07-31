@@ -2,7 +2,7 @@
     <div class="Holding">
         <h1>持仓查询</h1>
         <br><br>
-        <h-input v-model="name" placeholder="请输入客户姓名" style="width: 80%">
+        <h-input v-model="name" placeholder="请输入客户身份证号" style="width: 80%">
         </h-input>&nbsp;&nbsp;
         <h-button @click="searchCus" type="primary" shape="circle" icon="search">搜索</h-button>
         <h-table :data="tData" :columns="columns" headAlgin="center" bodyAlgin="center" style="margin:10px;" stripe></h-table>
