@@ -5,56 +5,23 @@
     <div class="search-container">
       <h-form>
         <h-form-item class="search" prop="key">
-          <h-input
-            v-model="keyValue"
-            placeholder="请输入关键字"
-            style="width: 10vw"
-          >
+          <h-input v-model="keyValue" placeholder="请输入关键字" style="width: 10vw">
           </h-input>
-          <h-button
-            @click="searchCus"
-            type="primary"
-            shape="circle"
-            icon="search"
-            >搜索</h-button
-          >
+          <h-button @click="searchCus" type="primary" shape="circle" icon="search">搜索</h-button>
         </h-form-item>
       </h-form>
     </div>
     <div class="cus-table">
-      <h-table
-        border
-        stripe
-        size="large"
-        headAlgin="center"
-        bodyAlgin="center"
-        :data="tData"
-        :columns="columns"
-      ></h-table>
+      <h-table border stripe size="large" headAlgin="center" bodyAlgin="center" :data="tData"
+        :columns="columns"></h-table>
     </div>
 
-    <h-page
-      class="cus-page-button"
-      size="small"
-      :total="totalNum"
-      @on-change="dataChange"
-      show-elevator
-      show-total
-      fastArrival
-      page-size="10"
-    ></h-page>
+    <h-page class="cus-page-button" size="small" :total="totalNum" @on-change="dataChange" show-elevator show-total
+      fastArrival page-size="10"></h-page>
 
-    <UserInfoModal
-      @close="closeModal"
-      :visible="showModal"
-      :user="selectedUser"
-    ></UserInfoModal>
+    <UserInfoModal @close="closeModal" :visible="showModal" :user="selectedUser"></UserInfoModal>
 
-    <UserEditModal
-      @closeEdit="closeEditModal"
-      :editVisible="showEditModal"
-      :editUser="editedUser"
-    ></UserEditModal>
+    <UserEditModal @closeEdit="closeEditModal" :editVisible="showEditModal" :editUser="editedUser"></UserEditModal>
   </div>
 </template>
 
@@ -164,56 +131,52 @@ export default {
     };
   },
   methods: {
-    searchCus() {
-      if (this.keyValue !== "") {
-        console.log(this.keyValue);
-        this.fetehData();
+    async searchCus() {
+      if (this.keyValue === "") {
+        await this.fetehData();
       } else {
         this.tData = [];
         let d = {};
         this.totalNum = 0;
-        axios
-          .get(
-            `http://127.0.0.1:9091/search/invester/name?key=${this.keyValue}`
-          )
-          .then((response) => {
-            response.data.forEach((item) => {
-              d.name = item.userName;
-              d.type = item.userType;
-              d.ID = item.cerNumber;
-              d.cerType = item.cerType;
-              d.riskLevel = item.riskGrade;
-              this.tData.push(d);
-              d = {};
-              this.totalNum++;
-              console.log(d);
-            });
-          })
-          .catch((error) => {
-            console.error(error);
+
+        const response1 = axios.get(`http://127.0.0.1:9091/search/invester/name?key=${this.keyValue}`);
+        const response2 = axios.get(`http://127.0.0.1:9091/search/invester/number?key=${this.keyValue}`);
+
+        try {
+          const [response1Data, response2Data] = await Promise.all([response1, response2]);
+
+          response1Data.data.forEach((item) => {
+            d.name = item.userName;
+            d.type = item.userType;
+            d.ID = item.cerNumber;
+            d.cerType = item.cerType;
+            d.riskLevel = item.riskGrade;
+            this.tData.push(d);
+            d = {};
+            this.totalNum++;
           });
-        axios
-          .get(
-            `http://127.0.0.1:9091/search/invester/number?key=${this.keyValue}`
-          )
-          .then((response) => {
-            console.log(response, 111);
-            response.data.forEach((item) => {
-              d.name = item.userName;
-              d.type = item.userType;
-              d.ID = item.cerNumber;
-              d.cerType = item.cerType;
-              d.riskLevel = item.riskGrade;
-              this.tData.push(d);
-              d = {};
-              this.totalNum++;
-            });
-          })
-          .catch((error) => {
-            console.error(error);
+
+          response2Data.data.forEach((item) => {
+            d.name = item.userName;
+            d.type = item.userType;
+            d.ID = item.cerNumber;
+            d.cerType = item.cerType;
+            d.riskLevel = item.riskGrade;
+            this.tData.push(d);
+            d = {};
+            this.totalNum++;
           });
+
+          for (const item of this.tData) {
+            await this.fetehCard(item);
+            console.log(this.tData, 12345);
+          }
+        } catch (error) {
+          console.error(error);
+        }
       }
     },
+
     numChange(value) {
       console.log(value);
     },
@@ -223,7 +186,7 @@ export default {
     },
 
     viewUser(user) {
-      console.log(user);
+      console.log(user, 123);
       this.showModal = true;
       const customer = this.tData.find((item) => item.ID === user.ID);
       this.selectedUser = customer;
@@ -248,7 +211,7 @@ export default {
     fetehData() {
       return new Promise((resolve, reject) => {
         let d = {};
-        this.tData =[];
+        this.tData = [];
         axios
           .get("http://127.0.0.1:9091/getInvester/all")
           .then((response) => {
@@ -320,6 +283,7 @@ export default {
   height: 100vh;
   margin-block: 1vh;
 }
+
 .cus-table {
   margin-bottom: 2vh;
 }
