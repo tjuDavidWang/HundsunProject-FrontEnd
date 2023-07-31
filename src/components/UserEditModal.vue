@@ -38,6 +38,7 @@
           v-model="editUser.ID"
           size="large"
           style="width: 10vw"
+          disabled
         ></h-input>
       </h-form-item>
     </h-form>

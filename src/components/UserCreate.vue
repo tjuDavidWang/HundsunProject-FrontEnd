@@ -1,47 +1,90 @@
 <template>
-  <div class="purchase-page">
+  <div>
     <div>
-      <h-form ref="invester" :model="invester" :label-width="100" inline>
-        <h-form-item label="投资人名称">
-          <h-input v-model="invester.user_name" size="large" style="width: 25vw"></h-input>
-        </h-form-item>
-        <h-form-item prop="user_type" label="投资人类型">
-          <h-select v-model="invester.user_type" style="width: 25vw">
-            <h-option v-for="item in investor_type" :value="item.value" :key="item.value">{{ item.value }}</h-option>
-          </h-select>
-        </h-form-item>
-        <h-form-item prop="cer_type" label="投资人证件类型">
-          <h-select v-model="invester.cer_type" style="width: 25vw">
-            <h-option v-for="item in certificate_type" :value="item.value" :key="item.value">{{ item.value }}</h-option>
-          </h-select>
-        </h-form-item>
-        <h-form-item label="证件号码">
-          <h-input v-model="invester.cer_number" size="large" style="width: 25vw"></h-input>
-        </h-form-item>
-      </h-form>
-      <h-form ref="bank_card" :label-width="100" inline>
-        <h-form-item label="银行卡张数">
-          <h-input v-model="invester.bank_num" size="large" style="width: 6vw"></h-input>
-        </h-form-item>
-        <div v-for="(bankCard, index) in filteredBankCards" :key="index">
-          <template v-if="Number(invester.bank_num) <= 5">
-            <h-form-item label="银行选择">
-              <h-select v-model="bankCard.bank_name" style="width: 25vw">
-                <h-option v-for="item in bank_List" :value="item.value" :key="item.value">{{ item.value }}</h-option>
-              </h-select>
-            </h-form-item>
-            <h-form-item label="银行卡号">
-              <h-input v-model="bankCard.card_id" size="large" style="width: 25vw"></h-input> </h-form-item></template>
-        </div>
-        <div>
-          <!--改用编程式导航-->
-          <h-form-item v-if="Number(invester.bank_num) > 0 && Number(invester.bank_num) <= 5">
-            <h-button @click="nextStep" class="next" type="primary">下一步</h-button>
-          </h-form-item>
-        </div>
-      </h-form>
+      <h1>开户界面</h1>
     </div>
-    <br /><br />
+    <div class="purchase-page">
+      <div>
+        <h-form ref="invester" :model="invester" :label-width="100" inline>
+          <h-form-item label="投资人名称">
+            <h-input
+              v-model="invester.user_name"
+              size="large"
+              style="width: 25vw"
+            ></h-input>
+          </h-form-item>
+          <h-form-item prop="user_type" label="投资人类型">
+            <h-select v-model="invester.user_type" style="width: 25vw">
+              <h-option
+                v-for="item in investor_type"
+                :value="item.value"
+                :key="item.value"
+                >{{ item.value }}</h-option
+              >
+            </h-select>
+          </h-form-item>
+          <h-form-item prop="cer_type" label="投资人证件类型">
+            <h-select v-model="invester.cer_type" style="width: 25vw">
+              <h-option
+                v-for="item in certificate_type"
+                :value="item.value"
+                :key="item.value"
+                >{{ item.value }}</h-option
+              >
+            </h-select>
+          </h-form-item>
+          <h-form-item label="证件号码">
+            <h-input
+              v-model="invester.cer_number"
+              size="large"
+              style="width: 25vw"
+            ></h-input>
+          </h-form-item>
+        </h-form>
+        <h-form ref="bank_card" :label-width="100" inline>
+          <h-form-item label="银行卡张数">
+            <h-input
+              v-model="invester.bank_num"
+              size="large"
+              style="width: 6vw"
+            ></h-input>
+          </h-form-item>
+          <div v-for="(bankCard, index) in filteredBankCards" :key="index">
+            <template v-if="Number(invester.bank_num) <= 5">
+              <h-form-item label="银行选择">
+                <h-select v-model="bankCard.bank_name" style="width: 25vw">
+                  <h-option
+                    v-for="item in bank_List"
+                    :value="item.value"
+                    :key="item.value"
+                    >{{ item.value }}</h-option
+                  >
+                </h-select>
+              </h-form-item>
+              <h-form-item label="银行卡号">
+                <h-input
+                  v-model="bankCard.card_id"
+                  size="large"
+                  style="width: 25vw"
+                ></h-input> </h-form-item
+            ></template>
+          </div>
+          <div>
+            <!--改用编程式导航-->
+            <h-form-item
+              v-if="
+                Number(invester.bank_num) > 0 && Number(invester.bank_num) <= 5
+              "
+            >
+              <h-button @click="nextStep" class="next" type="primary"
+                >下一步</h-button
+              >
+            </h-form-item>
+          </div>
+        </h-form>
+      </div>
+      <br /><br />
+    </div>
   </div>
 </template>
 <script>
@@ -152,7 +195,8 @@ export default {
       this.invester.formDynamic.bank_card.forEach((item) => {
         axios
           .post(
-            `http://127.0.0.1:9091/addBankCard?cer_number=${this.invester.cer_number
+            `http://127.0.0.1:9091/addBankCard?cer_number=${
+              this.invester.cer_number
             }&card_number=${item.card_id}&bank_name=${encodeURIComponent(
               item.bank_name
             )}&balance=100.0`
@@ -172,7 +216,7 @@ export default {
         user_type: this.invester.user_type,
         cer_type: this.invester.cer_type,
         cer_number: this.invester.cer_number,
-        bank_num: this.invester.bank_num
+        bank_num: this.invester.bank_num,
       };
       this.$router.push({ path: "/Questionnaires", query });
     },
@@ -182,14 +226,17 @@ export default {
 <style scoped>
 #page-divider {
   margin-right: 0px;
-  padding-right: 0;
-  padding-left: 100px;
+  padding-left: 0;
+}
+h1 {
+  padding-top: 10vh;
+  padding-bottom: 6vh;
+  text-align: center;
 }
 
 .purchase-page {
   width: 100%;
-  padding-left: 5vw;
-  padding-top: 15%;
+  padding-left: 8vw;
 }
 
 .next {

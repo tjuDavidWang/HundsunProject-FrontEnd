@@ -21,17 +21,18 @@
         </h-form-item>
       </h-form>
     </div>
+    <div class="cus-table">
+      <h-table
+        border
+        stripe
+        size="large"
+        headAlgin="center"
+        bodyAlgin="center"
+        :data="tData"
+        :columns="columns"
+      ></h-table>
+    </div>
 
-    <h-table
-      class="cus-table"
-      border
-      stripe
-      size="large"
-      headAlgin="center"
-      bodyAlgin="center"
-      :data="tData"
-      :columns="columns"
-    ></h-table>
     <h-page
       class="cus-page-button"
       size="small"
@@ -164,46 +165,54 @@ export default {
   },
   methods: {
     searchCus() {
-      this.tData = [];
-      let d = {};
-      this.totalNum = 0;
-      axios
-        .get(`http://127.0.0.1:9091/search/invester/name?key=${this.keyValue}`)
-        .then((response) => {
-          response.data.forEach((item) => {
-            d.name = item.userName;
-            d.type = item.userType;
-            d.ID = item.cerNumber;
-            d.cerType = item.cerType;
-            d.riskLevel = item.riskGrade;
-            this.tData.push(d);
-            d = {};
-            this.totalNum++;
-            console.log(d);
+      if (this.keyValue !== "") {
+        console.log(this.keyValue);
+        this.fetehData();
+      } else {
+        this.tData = [];
+        let d = {};
+        this.totalNum = 0;
+        axios
+          .get(
+            `http://127.0.0.1:9091/search/invester/name?key=${this.keyValue}`
+          )
+          .then((response) => {
+            response.data.forEach((item) => {
+              d.name = item.userName;
+              d.type = item.userType;
+              d.ID = item.cerNumber;
+              d.cerType = item.cerType;
+              d.riskLevel = item.riskGrade;
+              this.tData.push(d);
+              d = {};
+              this.totalNum++;
+              console.log(d);
+            });
+          })
+          .catch((error) => {
+            console.error(error);
           });
-        })
-        .catch((error) => {
-          console.error(error);
-        });
-      axios
-        .get(
-          `http://127.0.0.1:9091/search/invester/name?number=${this.keyValue}`
-        )
-        .then((response) => {
-          response.data.forEach((item) => {
-            d.name = item.userName;
-            d.type = item.userType;
-            d.ID = item.cerNumber;
-            d.cerType = item.cerType;
-            d.riskLevel = item.riskGrade;
-            this.tData.push(d);
-            d = {};
-            this.totalNum++;
+        axios
+          .get(
+            `http://127.0.0.1:9091/search/invester/number?key=${this.keyValue}`
+          )
+          .then((response) => {
+            console.log(response, 111);
+            response.data.forEach((item) => {
+              d.name = item.userName;
+              d.type = item.userType;
+              d.ID = item.cerNumber;
+              d.cerType = item.cerType;
+              d.riskLevel = item.riskGrade;
+              this.tData.push(d);
+              d = {};
+              this.totalNum++;
+            });
+          })
+          .catch((error) => {
+            console.error(error);
           });
-        })
-        .catch((error) => {
-          console.error(error);
-        });
+      }
     },
     numChange(value) {
       console.log(value);
@@ -239,6 +248,7 @@ export default {
     fetehData() {
       return new Promise((resolve, reject) => {
         let d = {};
+        this.tData =[];
         axios
           .get("http://127.0.0.1:9091/getInvester/all")
           .then((response) => {
@@ -308,10 +318,13 @@ export default {
   padding: 3% 5%;
   text-align: center;
   height: 100vh;
+  margin-block: 1vh;
+}
+.cus-table {
+  margin-bottom: 2vh;
 }
 
 .cus-page-button {
   float: right;
-  margin: 1vw;
 }
 </style>
