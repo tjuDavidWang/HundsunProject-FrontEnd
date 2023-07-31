@@ -1,6 +1,6 @@
 <template>
     <div id="side-bar">
-        <h-menu theme="dark" :active-name="activeMenuItem" :open-names="['1', '2', '3', '4']" width="auto"
+        <h-menu theme="dark" :active-name="activeMenuItem" :open-names="['1', '2', '3', '4','5']" width="auto"
         :collapse="isCollapse === 'true'">
 
             <router-link to="/home">
@@ -52,6 +52,17 @@
                     <h-menu-item name="4-1">每日清算</h-menu-item>
                 </router-link>
             </h-submenu>
+
+            <h-submenu name="5">
+                <template slot="title">
+                    <h-icon name="social-usd-outline"></h-icon>
+                    <span slot="title">业务查询</span>
+                </template>
+                <router-link to="/Holding">
+                    <h-menu-item name="5-1">持仓查询</h-menu-item>
+                </router-link>
+            </h-submenu>
+
         </h-menu>
         <br />
     </div>

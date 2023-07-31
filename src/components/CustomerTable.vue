@@ -187,7 +187,7 @@ export default {
         });
       axios
         .get(
-          `http://127.0.0.1:9091/search/invester/name?number=${this.keyValue}`
+          `http://127.0.0.1:9091/search/invester/number?key=${this.keyValue}`
         )
         .then((response) => {
           response.data.forEach((item) => {

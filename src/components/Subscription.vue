@@ -1,7 +1,7 @@
 <template>
     <div class="purchase-page">
         <div class="title">
-            <h1>申购功能示意</h1>
+            <h1>申购面板</h1>
             <br><br>
         </div>
         <div>
