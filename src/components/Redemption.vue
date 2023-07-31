@@ -1,5 +1,9 @@
 <template>
     <div class="redeem-page">
+        <div class="title">
+            <h1>赎回功能示意</h1>
+            <br><br>
+        </div>
         <div>
             <h-form ref="invester" :model="invester" :rules="rule_invester" :label-width="100" inline>
                 <h-form-item prop="cer_number" label="投资人查询">
@@ -27,13 +31,13 @@
                 </h-form-item>
 
                 <h-form-item prop="bank_card" label="银行卡选择">
-                    <h-select v-model="invester.bank_card" style="width:56vw;">
-                        <h-option v-for="item in invester.bank_card_List" :value="item.value" :key="item.value">{{
-                            item.label }}</h-option>
+                    <h-select v-model="invester.bank_card" style="width:56vw;" @on-change="onchange">
+                        <h-option v-for="item in invester.bank_card_List" :value="item.value" :key="item.value">{{ item.label }}</h-option>
                     </h-select>
                     <!--span class="demo-data">{{ invester.bank_card }}</span-->
                 </h-form-item>
             </h-form>
+
             <h-form ref="bank_card" :model="bank_card" :label-width="100" inline>
                 <h-form-item prop="bank_name" label="银行名称">
                     <h-input v-model="bank_card.bank_name" :readonly="true" size="large" style="width: 25vw;"></h-input>
@@ -42,6 +46,7 @@
                     <h-input v-model="bank_card.card_balance" :readonly="true" size="large" style="width: 25vw;"></h-input>
                 </h-form-item>
             </h-form>
+
             <h-form ref="fund_product" :model="fund_product" :rules="rule_fund_product" :label-width="100" inline>
                 <h-form-item prop="fund_number" label="基金代码">
                     <h-input v-model="fund_product.fund_number" size="large" icon="close" placeholder="请输入当前基金产品代码"
@@ -62,29 +67,36 @@
                     <h-input v-model="fund_product.fund_risk" :readonly="true" size="large" style="width: 25vw;"></h-input>
                 </h-form-item>
             </h-form>
+
             <h-form ref="redemption" :model="redemption" :rules="rule_redemption" :label-width="100" inline>
                 <h-form-item prop="red_share" label="赎回份额">
                     <h-input v-model="redemption.red_share" size="large" icon="close" placeholder="请输入当前银行卡对基金产品的赎回份额"
                         style="width:56vw;" @on-click="redemption.red_share = onclick()"></h-input>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                    <h-button type="primary"  @click="r_click = true">赎回</h-button>
-                    <h-msg-box v-model="r_click" :escClose="true" title="确认赎回吗？" @on-ok="handleSubmit('redemption')" @on-cancel="cancel" :beforeEscClose="beforetest"></h-msg-box>
+                    <h-button type="primary"  @click="r_click = sold('redemption')">赎回</h-button>
+                    <h-msg-box v-model="r_click" :escClose="true" title="确认赎回吗？" @on-ok="handleSubmit()" @on-cancel="cancel" :beforeEscClose="beforetest"></h-msg-box>
                     <h-msg-box v-model="rs_click" width="360">
                         <p slot="header" style="color: #0a6; text-align: center;"><h-icon name="success"></h-icon><span>赎回成功</span></p>
-                        <div style="text-align: center;"><p>此任务删除后，下游 10 个任务将无法执行。</p><p>是否继续删除？</p></div>
+                        <div style="text-align: center;"><p>成交份额：{{redemption.red_share}}</p><p>清空信息重新赎回</p></div>
                         <div slot="footer"><h-button type="success" size="large" long @click="rs_click = cancel()">确定</h-button></div>
                     </h-msg-box>
-                    <h-msg-box v-model="rf_click" width="360">
+                    <h-msg-box v-model="rf_click1" width="360">
                         <p slot="header" style="color: #f60; text-align: center;"><h-icon name="warning"></h-icon><span>赎回失败</span></p>
-                        <div style="text-align: center;"><p>此任务删除后，下游 10 个任务将无法执行。</p><p>是否继续删除？</p></div>
-                        <div slot="footer"><h-button type="error" size="large" long @click="rf_click = cancel()">取消</h-button></div>
+                        <div style="text-align: center;"><p>赎回信息缺失</p></div>
+                        <div slot="footer"><h-button type="error" size="large" long @click="rf_click1 = cancel()">取消</h-button></div>
+                    </h-msg-box>
+                    <h-msg-box v-model="rf_click2" width="360">
+                        <p slot="header" style="color: #f60; text-align: center;"><h-icon name="warning"></h-icon><span>赎回失败</span></p>
+                        <div style="text-align: center;"><p>不满足赎回条件</p></div>
+                        <div slot="footer"><h-button type="error" size="large" long @click="rf_click2 = cancel()">取消</h-button></div>
                     </h-msg-box>
                 </h-form-item>
             </h-form>
+            <br><br>
         </div>
-        <br><br>
     </div>
 </template>
 <script>
+import axios from 'axios';
 export default {
     data() {
         return {
@@ -95,32 +107,16 @@ export default {
                 cer_type: "",
                 risk_grade: "",
                 bank_card: "",
-                bank_card_List: [
-                    {
-                        value: "beijing",
-                        label: "北京市",
-                    },
-                    {
-                        value: "shanghai",
-                        label: "上海市",
-                    },
-                    {
-                        value: "shenzhen",
-                        label: "深圳市",
-                    },
-                    {
-                        value: "hangzhou",
-                        label: "杭州市",
-                    },
-                ],
+                bank_card_List: [],
             },
+            totalNum: 0,
             rule_invester: {
                 cer_number: [
                     { required: true, message: "请填写投资人证件号码", trigger: "blur" },
                     {
                         type: "string",
-                        min: 18,
-                        message: "身份证号长度不能小于18位",
+                        min: 5,
+                        message: "身份证号长度不能小于5位",
                         trigger: "blur",
                     },
                     {
@@ -155,14 +151,18 @@ export default {
             },
             rule_redemption: {
                 red_share: [
-                    { required: true, message: "请填写赎回份额", trigger: "blur" },
+                    { required: true, pattern: new RegExp(/^[1-9]\d*(?:\.\d*)?$/, "g"), message: "请填写赎回份额", trigger: "blur" },
                 ],
             },
             i_click: false,
             f_click: false,
             r_click: false,
             rs_click: false,
-            rf_click: false,
+            rf_click1: false,
+            rf_click2: false,
+            findi: false,
+            findf: false,
+            findr: false,
         };
     },
     methods: {
@@ -171,50 +171,215 @@ export default {
             //this.invester.cer_number = "";
             return "";
         },
+        fetchInvester() {
+            this.findi = false;
+            //?cer_number=${this.invester.cer_number}
+            //{params: {cer_number: "310101hhhhjjjjkkkk"}}
+            return axios.get("http://127.0.0.1:9091/getInvester?cer_number="+this.invester.cer_number)
+                .then((response) => {
+                    console.log(response);
+                    const {
+                        data,
+                        status,
+                    } = response;
+                    if(status !== 200 || response.data === ""){
+                        this.findi = false;
+                        return;
+                    }
+                    //JSON.parse
+                    //JSON.stringify(data)转换json为字符串
+                    //document.writeln(temp);
+                    this.invester.user_name = data.userName;
+                    this.invester.user_type = data.userType;
+                    this.invester.cer_type = data.cerType;
+                    this.invester.risk_grade = data.riskGrade;
+                    console.log(this.invester);
+                    this.findi = true;
+                    return;
+                })
+                .catch((error) => {
+                    console.log(error);
+                    this.findi = false;
+                    return;
+                });
+        },
+        fetchBankCard() {
+            return axios.get('http://127.0.0.1:9091/getBankCard/all?cer_number='+this.invester.cer_number)
+                .then((response) => {
+                    console.log(response);
+                    if(response.status !== 200 || response.data === ""){
+                        this.findi = false;
+                        return;
+                    }
+                    this.invester.bank_card_List = response.data.map(item => ({
+                        value: item.cardNumber,
+                        label: item.cardNumber,
+                        bank_name: item.bankName,
+                        card_balance: item.balance,
+                    }));
+                    /*let i;
+                    for(i = 0; i < response.length; i += 1){
+                        let item = response.data[i];
+                        this.invester.bank_card_List.push({value: item.cardNumber, label: item.cardNumber, bank_name: item.bankName, card_balance: item.balance,});
+                    }*/
+                    this.totalNum = this.invester.bank_card_List.length;
+                    // Return the fetched data
+                    //return this.invester.bank_card_List;
+                    console.log(this.invester.bank_card_List);
+                    return;
+                })
+                .catch((error) => {
+                    console.log(error);
+                    this.findi = false;
+                    return;
+                });
+        },
         findi_Submit(name) {
             this.$refs[name].validate((valid) => {
                 if (valid) {
                     this.$hMessage.success("提交成功!");
-                    this.i_click = true;
-                    /*if(invester.cer_number){
-                        a
-                    } else {
-                        b
-                    }*/
+                    this.findi = false;
+                    this.fetchInvester()
+                    .then(() => this.fetchBankCard())
+                    .then(() => {
+                        if(this.findi){
+                            //
+                        } else {
+                            this.i_click = true;
+                            this.invester.cer_number = "";
+                            this.invester.user_name = "";
+                            this.invester.user_type = "";
+                            this.invester.cer_type = "";
+                            this.invester.risk_grade = "";
+                            this.invester.bank_card = "";
+                            this.invester.bank_card_List = [];
+                            this.totalNum = 0,
+                            this.bank_card.bank_card = "";
+                            this.bank_card.bank_name = "";
+                            this.bank_card.card_balance = "";
+                        }
+                    });
                 } else {
                     this.$hMessage.error("表单验证失败!");
                 }
             });
+        },
+        fetchProduct() {
+            this.findf = false;
+            return axios.get("http://127.0.0.1:9091/getProduct?fund_number="+this.fund_product.fund_number)
+                .then((response) => {
+                    console.log(response);
+                    if(response.status !== 200 || response.data === ""){
+                        this.findf = false;
+                        return;
+                    }
+                    this.fund_product.fund_name = response.data.fundName;
+                    this.fund_product.fund_type = response.data.fundType;
+                    this.fund_product.fund_risk = response.data.fundRisk;
+                    console.log(this.fund_product);
+                    this.findf = true;
+                    return;
+                })
+                .catch((error) => {
+                    console.log(error);
+                    this.findf = false;
+                    return;
+                });
         },
         findf_Submit(name) {
             this.$refs[name].validate((valid) => {
                 if (valid) {
                     this.$hMessage.success("提交成功!");
-                    this.f_click = true;
-                    /*if(invester.cer_number){
-                        a
-                    } else {
-                        b
-                    }*/
+                    this.fetchProduct()
+                    .then(() => {
+                        if(this.findf){
+                            //
+                        } else {
+                            this.f_click = true;
+                            this.fund_product.fund_name = "";
+                            this.fund_product.fund_type = "";
+                            this.fund_product.fund_risk = "";
+                        }
+                    });
                 } else {
                     this.$hMessage.error("表单验证失败!");
                 }
             });
         },
-        handleSubmit(name) {
+        onchange() {
+            if(this.invester.bank_card !== "") {
+                //this.$hMessage.success("提交成功!");
+                this.bank_card.bank_card = this.invester.bank_card;
+                let i = 0;
+                for(; i < this.totalNum; i += 1) {
+                    if(this.bank_card.bank_card === this.invester.bank_card_List[i].value) {
+                        this.bank_card.bank_name = this.invester.bank_card_List[i].bank_name;
+                        this.bank_card.card_balance = this.invester.bank_card_List[i].card_balance;
+                        break;
+                    }
+                }
+            } else {
+                this.bank_card.bank_card = "";
+                this.bank_card.bank_name = "";
+                this.bank_card.card_balance = "";
+            }
+        },
+        sold(name) {
+            this.findr = false;
             this.$refs[name].validate((valid) => {
                 if (valid) {
                     this.$hMessage.success("提交成功!");
-                    this.rf_click = true;
-                    /*if(invester.cer_number){
-                        a
-                    } else {
-                        b
-                    }*/
+                    this.findr = true;
                 } else {
                     this.$hMessage.error("表单验证失败!");
+                    this.findr = false;
                 }
             });
+            return this.findr;
+        },
+        createRedemption() {
+            return axios.get("http://127.0.0.1:9091/createRedemption?red_card_number=" + this.redemption.bank_card + "&cer_number=" + this.redemption.cer_number + "&fund_number=" + this.redemption.fund_number + "&red_share=" + this.redemption.red_share)
+                .then((response) => {
+                    if(response.data !== "OK: " + this.redemption.cer_number){
+                        this.rf_click2 = true;
+                        return;
+                    }
+                    this.rs_click = true;
+                    console.log(response);
+                    this.invester.cer_number = "";
+                    this.invester.user_name = "";
+                    this.invester.user_type = "";
+                    this.invester.cer_type = "";
+                    this.invester.risk_grade = "";
+                    this.invester.bank_card = "";
+                    this.invester.bank_card_List = [];
+                    this.totalNum = 0;
+                    this.bank_card.bank_card = "";
+                    this.bank_card.bank_name = "";
+                    this.bank_card.card_balance = "";
+                    this.fund_product.fund_number = "";
+                    this.fund_product.fund_name = "";
+                    this.fund_product.fund_type = "";
+                    this.fund_product.fund_risk = "";
+                    this.redemption.fund_number = "";
+                    this.redemption.bank_card = "";
+                    this.redemption.cer_number = "";
+                    this.redemption.red_share = "";
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+        },
+        handleSubmit() {
+            if(this.fund_product.fund_number && this.invester.cer_number && this.bank_card.bank_card && this.redemption.red_share) {
+                this.redemption.fund_number = this.fund_product.fund_number;
+                this.redemption.bank_card = this.bank_card.bank_card;
+                this.redemption.cer_number = this.invester.cer_number;
+                this.redemption.sub_amount = this.redemption.red_share;
+                this.createRedemption();
+            } else {
+                this.rf_click1 = true;
+            }
         },
         beforetest() {
             return true;
@@ -251,6 +416,12 @@ export default {
 .redeem-page {
     width: 100%;
     padding-left: 5vw;
-    padding-top: 10%;
+    padding-top: 5%;
+}
+.title {
+    width: 100%;
+    text-align: center;
+    padding-right: 10vw;
+    padding-top: 0%;
 }
 </style>
