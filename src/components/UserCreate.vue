@@ -1,13 +1,7 @@
 <template>
   <div class="purchase-page">
     <div>
-      <h-form
-        ref="invester"
-        :model="invester"
-        :rules="rule_invester"
-        :label-width="100"
-        inline
-      >
+      <h-form ref="invester" :model="invester" :label-width="100" inline>
         <h-form-item label="投资人名称">
           <h-input
             v-model="invester.user_name"
@@ -21,7 +15,7 @@
               v-for="item in investor_type"
               :value="item.value"
               :key="item.value"
-              >{{ item.label }}</h-option
+              >{{ item.value }}</h-option
             >
           </h-select>
         </h-form-item>
@@ -31,7 +25,7 @@
               v-for="item in certificate_type"
               :value="item.value"
               :key="item.value"
-              >{{ item.label }}</h-option
+              >{{ item.value }}</h-option
             >
           </h-select>
         </h-form-item>
@@ -43,7 +37,7 @@
           ></h-input>
         </h-form-item>
       </h-form>
-      <h-form ref="bank_card" :model="bank_card" :label-width="100" inline>
+      <h-form ref="bank_card" :label-width="100" inline>
         <h-form-item label="银行卡张数">
           <h-input
             v-model="invester.bank_num"
@@ -59,7 +53,7 @@
                   v-for="item in bank_List"
                   :value="item.value"
                   :key="item.value"
-                  >{{ item.label }}</h-option
+                  >{{ item.value }}</h-option
                 >
               </h-select>
             </h-form-item>
@@ -73,8 +67,14 @@
         </div>
         <div>
           <router-link to="/Questionnaires">
-            <h-form-item v-if="Number(invester.bank_num) > 0 && Number(invester.bank_num) <= 5">
-              <h-button class="next" type="primary">下一步</h-button>
+            <h-form-item
+              v-if="
+                Number(invester.bank_num) > 0 && Number(invester.bank_num) <= 5
+              "
+            >
+              <h-button @click="addCard" class="next" type="primary"
+                >下一步</h-button
+              >
             </h-form-item>
           </router-link>
         </div>
@@ -84,6 +84,7 @@
   </div>
 </template>
 <script>
+import axios from "axios";
 export default {
   data() {
     return {
@@ -104,48 +105,42 @@ export default {
       },
       investor_type: [
         {
-          value: "person",
-          label: "个人",
+          value: "个人",
         },
         {
-          value: "institution",
-          label: "机构",
+          value: "机构",
         },
       ],
       certificate_type: [
         {
-          value: "Identification-card",
+          value: "居民身份证",
           label: "居民身份证",
         },
         {
-          value: "HM-card",
+          value: "港澳居民往来内地通行",
           label: "港澳居民往来内地通行证",
         },
         {
-          value: "TW-card",
+          value: "台湾居民来往大陆通行证",
           label: "台湾居民来往大陆通行证",
         },
         {
-          value: "passport",
+          value: "护照",
           label: "护照",
         },
       ],
       bank_List: [
         {
-          value: "chinaBank",
-          label: "中国银行",
+          value: "中国银行",
         },
         {
-          value: "conBank",
-          label: "中国建设银行",
+          value: "中国建设银行",
         },
         {
-          value: "iAndCBank",
-          label: "中国工商银行",
+          value: "中国工商银行",
         },
         {
-          value: "agrBank",
-          label: "中国农业银行",
+          value: "中国农业银行",
         },
       ],
     };
@@ -190,6 +185,26 @@ export default {
         }
       });
     },
+    addCard() {
+      console.log(123456);
+      console.log(this.invester.formDynamic.bank_card.length);
+      this.invester.formDynamic.bank_card.forEach((item) => {
+        axios
+          .post(
+            `http://127.0.0.1:9091/addBankCard?cer_number=${
+              this.invester.cer_number
+            }&card_number=${item.card_id}&bank_name=${encodeURIComponent(
+              item.bank_name
+            )}&balance=100.0`
+          )
+          .then(() => {
+            console.log("success");
+          })
+          .catch((error) => {
+            console.error(error);
+          });
+      });
+    },
   },
 };
 </script>
@@ -208,8 +223,7 @@ export default {
 
 .next {
   margin-left: 24vw;
-  width:6vw;
-  margin-top:3vw;
+  width: 6vw;
+  margin-top: 3vw;
 }
 </style>
-

@@ -43,11 +43,14 @@ function Liquidate() {
 function AddCustomer() {
   return import(/* webpackChunkName: "UserCreate" */ '@/components/UserCreate.vue')
 }
-
+function Questionnaires(){
+  return import(/* webpackChunkName: "Questionnaires" */ '@/components/Questionnaires.vue')
+}
 
 const routes = [
   {
     path: '/',
+    redirect: '/home', // 添加这一行来重定向根路径到home路径
     component: Index,
     children: [
       {
@@ -84,6 +87,11 @@ const routes = [
         name: 'Liquidate',
         path: 'Liquidate',
         component: Liquidate,
+      },
+      {
+        name: 'Questionnaires',
+        path: 'Questionnaires',
+        component: Questionnaires,
       }
     ],
   },
