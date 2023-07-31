@@ -1,7 +1,7 @@
 # HundsunProject-FrontEnd
 Hundsun Summer Professional Internship Program with Vue and HUI to build a fund trading platform.
 
-![image](https://github.com/tjuDavidWang/HundsunProject-FrontEnd/tree/main/img/homepage.png)
+![image](https://github.com/tjuDavidWang/HundsunProject-FrontEnd/blob/main/img/homepage.png)
 
 ## Project setup
 
