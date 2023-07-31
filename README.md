@@ -3,25 +3,33 @@
 
 ## Project setup
 
+### Installation of HUI scaffolding
+
+```bash
+npm install @hui/cli -gd
 ```
+
+### Installs dependencies
+
+```bash
 npm install
 ```
 
 ### Compiles and hot-reloads for development
 
-```
+```bash
 hui dev
 ```
 
 ### Compiles and minifies for production
 
-```
+```bash
 npm run build
 ```
 
 ### Lints and fixes files
 
-```
+```bash
 npm run lint
 ```
 
