@@ -1,18 +1,21 @@
 <template>
     <div class="redeem-page">
         <div class="title">
-            <h1>赎回功能示意</h1>
+            <h1>赎回面板</h1>
             <br><br>
         </div>
         <div>
             <h-form ref="invester" :model="invester" :rules="rule_invester" :label-width="100" inline>
                 <h-form-item prop="cer_number" label="投资人查询">
                     <h-input v-model="invester.cer_number" size="large" icon="close" placeholder="请输入当前投资人证件号码"
-                        style="width:56vw" @on-click="invester.cer_number = onclick()"></h-input>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        style="width:56vw"
+                        @on-click="invester.cer_number = onclick()"></h-input>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                     <h-button type="primary" @click="findi_Submit('invester')">查询</h-button>
                     <h-msg-box v-model="i_click" width="360">
-                        <p slot="header" style="color: #f60; text-align: center;"><h-icon name="warning"></h-icon><span>投资人查询失败</span></p>
-                        <div slot="footer"><h-button type="error" size="large" long @click="i_click = cancel()">取消</h-button></div>
+                        <p slot="header" style="color: #f60; text-align: center;"><h-icon
+                                name="warning"></h-icon><span>投资人查询失败</span></p>
+                        <div slot="footer"><h-button type="error" size="large" long
+                                @click="i_click = cancel()">取消</h-button></div>
                     </h-msg-box>
                 </h-form-item>
 
@@ -32,7 +35,8 @@
 
                 <h-form-item prop="bank_card" label="银行卡选择">
                     <h-select v-model="invester.bank_card" style="width:56vw;" @on-change="onchange">
-                        <h-option v-for="item in invester.bank_card_List" :value="item.value" :key="item.value">{{ item.label }}</h-option>
+                        <h-option v-for="item in invester.bank_card_List" :value="item.value" :key="item.value">{{
+                            item.label }}</h-option>
                     </h-select>
                     <!--span class="demo-data">{{ invester.bank_card }}</span-->
                 </h-form-item>
@@ -50,11 +54,14 @@
             <h-form ref="fund_product" :model="fund_product" :rules="rule_fund_product" :label-width="100" inline>
                 <h-form-item prop="fund_number" label="基金代码">
                     <h-input v-model="fund_product.fund_number" size="large" icon="close" placeholder="请输入当前基金产品代码"
-                        style="width:56vw;" @on-click="fund_product.fund_number = onclick()"></h-input>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        style="width:56vw;"
+                        @on-click="fund_product.fund_number = onclick()"></h-input>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                     <h-button type="primary" @click="findf_Submit('fund_product')">查询</h-button>
                     <h-msg-box v-model="f_click" width="360">
-                        <p slot="header" style="color: #f60; text-align: center;"><h-icon name="warning"></h-icon><span>基金产品查询失败</span></p>
-                        <div slot="footer"><h-button type="error" size="large" long @click="f_click = cancel()">取消</h-button></div>
+                        <p slot="header" style="color: #f60; text-align: center;"><h-icon
+                                name="warning"></h-icon><span>基金产品查询失败</span></p>
+                        <div slot="footer"><h-button type="error" size="large" long
+                                @click="f_click = cancel()">取消</h-button></div>
                     </h-msg-box>
                 </h-form-item>
                 <h-form-item prop="fund_name" label="基金名称">
@@ -71,23 +78,38 @@
             <h-form ref="redemption" :model="redemption" :rules="rule_redemption" :label-width="100" inline>
                 <h-form-item prop="red_share" label="赎回份额">
                     <h-input v-model="redemption.red_share" size="large" icon="close" placeholder="请输入当前银行卡对基金产品的赎回份额"
-                        style="width:56vw;" @on-click="redemption.red_share = onclick()"></h-input>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                    <h-button type="primary"  @click="r_click = sold('redemption')">赎回</h-button>
-                    <h-msg-box v-model="r_click" :escClose="true" title="确认赎回吗？" @on-ok="handleSubmit()" @on-cancel="cancel" :beforeEscClose="beforetest"></h-msg-box>
+                        style="width:56vw;"
+                        @on-click="redemption.red_share = onclick()"></h-input>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <h-button type="primary" @click="r_click = sold('redemption')">赎回</h-button>
+                    <h-msg-box v-model="r_click" :escClose="true" title="确认赎回吗？" @on-ok="handleSubmit()" @on-cancel="cancel"
+                        :beforeEscClose="beforetest"></h-msg-box>
                     <h-msg-box v-model="rs_click" width="360">
-                        <p slot="header" style="color: #0a6; text-align: center;"><h-icon name="success"></h-icon><span>赎回成功</span></p>
-                        <div style="text-align: center;"><p>成交份额：{{redemption.red_share}}</p><p>清空信息重新赎回</p></div>
-                        <div slot="footer"><h-button type="success" size="large" long @click="rs_click = cancel()">确定</h-button></div>
+                        <p slot="header" style="color: #0a6; text-align: center;"><h-icon
+                                name="success"></h-icon><span>赎回成功</span></p>
+                        <div style="text-align: center;">
+                            <p>成交份额：{{ redemption.red_share }}</p>
+                            <p>清空信息重新赎回</p>
+                        </div>
+                        <div slot="footer"><h-button type="success" size="large" long
+                                @click="rs_click = cancel()">确定</h-button></div>
                     </h-msg-box>
                     <h-msg-box v-model="rf_click1" width="360">
-                        <p slot="header" style="color: #f60; text-align: center;"><h-icon name="warning"></h-icon><span>赎回失败</span></p>
-                        <div style="text-align: center;"><p>赎回信息缺失</p></div>
-                        <div slot="footer"><h-button type="error" size="large" long @click="rf_click1 = cancel()">取消</h-button></div>
+                        <p slot="header" style="color: #f60; text-align: center;"><h-icon
+                                name="warning"></h-icon><span>赎回失败</span></p>
+                        <div style="text-align: center;">
+                            <p>赎回信息缺失</p>
+                        </div>
+                        <div slot="footer"><h-button type="error" size="large" long
+                                @click="rf_click1 = cancel()">取消</h-button></div>
                     </h-msg-box>
                     <h-msg-box v-model="rf_click2" width="360">
-                        <p slot="header" style="color: #f60; text-align: center;"><h-icon name="warning"></h-icon><span>赎回失败</span></p>
-                        <div style="text-align: center;"><p>不满足赎回条件</p></div>
-                        <div slot="footer"><h-button type="error" size="large" long @click="rf_click2 = cancel()">取消</h-button></div>
+                        <p slot="header" style="color: #f60; text-align: center;"><h-icon
+                                name="warning"></h-icon><span>赎回失败</span></p>
+                        <div style="text-align: center;">
+                            <p>不满足赎回条件</p>
+                        </div>
+                        <div slot="footer"><h-button type="error" size="large" long
+                                @click="rf_click2 = cancel()">取消</h-button></div>
                     </h-msg-box>
                 </h-form-item>
             </h-form>
@@ -115,14 +137,14 @@ export default {
                     { required: true, message: "请填写投资人证件号码", trigger: "blur" },
                     {
                         type: "string",
-                        min: 5,
-                        message: "身份证号长度不能小于5位",
+                        min: 1,
+                        message: "身份证号长度不能小于1位",
                         trigger: "blur",
                     },
                     {
                         type: "string",
-                        max: 18,
-                        message: "身份证号长度不能大于18位",
+                        max: 20,
+                        message: "身份证号长度不能大于20位",
                         trigger: "blur",
                     },
                 ],
@@ -151,7 +173,7 @@ export default {
             },
             rule_redemption: {
                 red_share: [
-                    { required: true, pattern: new RegExp(/^[1-9]\d*(?:\.\d*)?$/, "g"), message: "请填写赎回份额", trigger: "blur" },
+                    { required: true, pattern: new RegExp(/^[0-9]\d*(?:\.\d*)?$/, "g"), message: "请填写赎回份额", trigger: "blur" },
                 ],
             },
             i_click: false,
@@ -175,14 +197,14 @@ export default {
             this.findi = false;
             //?cer_number=${this.invester.cer_number}
             //{params: {cer_number: "310101hhhhjjjjkkkk"}}
-            return axios.get("http://127.0.0.1:9091/getInvester?cer_number="+this.invester.cer_number)
+            return axios.get("http://127.0.0.1:9091/getInvester?cer_number=" + this.invester.cer_number)
                 .then((response) => {
                     console.log(response);
                     const {
                         data,
                         status,
                     } = response;
-                    if(status !== 200 || response.data === ""){
+                    if (status !== 200 || response.data === "") {
                         this.findi = false;
                         return;
                     }
@@ -204,10 +226,10 @@ export default {
                 });
         },
         fetchBankCard() {
-            return axios.get('http://127.0.0.1:9091/getBankCard/all?cer_number='+this.invester.cer_number)
+            return axios.get('http://127.0.0.1:9091/getBankCard/all?cer_number=' + this.invester.cer_number)
                 .then((response) => {
                     console.log(response);
-                    if(response.status !== 200 || response.data === ""){
+                    if (response.status !== 200 || response.data === "") {
                         this.findi = false;
                         return;
                     }
@@ -240,25 +262,25 @@ export default {
                     this.$hMessage.success("提交成功!");
                     this.findi = false;
                     this.fetchInvester()
-                    .then(() => this.fetchBankCard())
-                    .then(() => {
-                        if(this.findi){
-                            //
-                        } else {
-                            this.i_click = true;
-                            this.invester.cer_number = "";
-                            this.invester.user_name = "";
-                            this.invester.user_type = "";
-                            this.invester.cer_type = "";
-                            this.invester.risk_grade = "";
-                            this.invester.bank_card = "";
-                            this.invester.bank_card_List = [];
-                            this.totalNum = 0,
-                            this.bank_card.bank_card = "";
-                            this.bank_card.bank_name = "";
-                            this.bank_card.card_balance = "";
-                        }
-                    });
+                        .then(() => this.fetchBankCard())
+                        .then(() => {
+                            if (this.findi) {
+                                //
+                            } else {
+                                this.i_click = true;
+                                this.invester.cer_number = "";
+                                this.invester.user_name = "";
+                                this.invester.user_type = "";
+                                this.invester.cer_type = "";
+                                this.invester.risk_grade = "";
+                                this.invester.bank_card = "";
+                                this.invester.bank_card_List = [];
+                                this.totalNum = 0,
+                                    this.bank_card.bank_card = "";
+                                this.bank_card.bank_name = "";
+                                this.bank_card.card_balance = "";
+                            }
+                        });
                 } else {
                     this.$hMessage.error("表单验证失败!");
                 }
@@ -266,10 +288,10 @@ export default {
         },
         fetchProduct() {
             this.findf = false;
-            return axios.get("http://127.0.0.1:9091/getProduct?fund_number="+this.fund_product.fund_number)
+            return axios.get("http://127.0.0.1:9091/getProduct?fund_number=" + this.fund_product.fund_number)
                 .then((response) => {
                     console.log(response);
-                    if(response.status !== 200 || response.data === ""){
+                    if (response.status !== 200 || response.data === "") {
                         this.findf = false;
                         return;
                     }
@@ -291,28 +313,28 @@ export default {
                 if (valid) {
                     this.$hMessage.success("提交成功!");
                     this.fetchProduct()
-                    .then(() => {
-                        if(this.findf){
-                            //
-                        } else {
-                            this.f_click = true;
-                            this.fund_product.fund_name = "";
-                            this.fund_product.fund_type = "";
-                            this.fund_product.fund_risk = "";
-                        }
-                    });
+                        .then(() => {
+                            if (this.findf) {
+                                //
+                            } else {
+                                this.f_click = true;
+                                this.fund_product.fund_name = "";
+                                this.fund_product.fund_type = "";
+                                this.fund_product.fund_risk = "";
+                            }
+                        });
                 } else {
                     this.$hMessage.error("表单验证失败!");
                 }
             });
         },
         onchange() {
-            if(this.invester.bank_card !== "") {
+            if (this.invester.bank_card !== "") {
                 //this.$hMessage.success("提交成功!");
                 this.bank_card.bank_card = this.invester.bank_card;
                 let i = 0;
-                for(; i < this.totalNum; i += 1) {
-                    if(this.bank_card.bank_card === this.invester.bank_card_List[i].value) {
+                for (; i < this.totalNum; i += 1) {
+                    if (this.bank_card.bank_card === this.invester.bank_card_List[i].value) {
                         this.bank_card.bank_name = this.invester.bank_card_List[i].bank_name;
                         this.bank_card.card_balance = this.invester.bank_card_List[i].card_balance;
                         break;
@@ -340,7 +362,7 @@ export default {
         createRedemption() {
             return axios.get("http://127.0.0.1:9091/createRedemption?red_card_number=" + this.redemption.bank_card + "&cer_number=" + this.redemption.cer_number + "&fund_number=" + this.redemption.fund_number + "&red_share=" + this.redemption.red_share)
                 .then((response) => {
-                    if(response.data !== "OK: " + this.redemption.cer_number){
+                    if (response.data !== "OK: " + this.redemption.cer_number) {
                         this.rf_click2 = true;
                         return;
                     }
@@ -371,7 +393,7 @@ export default {
                 });
         },
         handleSubmit() {
-            if(this.fund_product.fund_number && this.invester.cer_number && this.bank_card.bank_card && this.redemption.red_share) {
+            if (this.fund_product.fund_number && this.invester.cer_number && this.bank_card.bank_card && this.redemption.red_share && this.fund_product.fund_name) {
                 this.redemption.fund_number = this.fund_product.fund_number;
                 this.redemption.bank_card = this.bank_card.bank_card;
                 this.redemption.cer_number = this.invester.cer_number;
@@ -406,8 +428,7 @@ export default {
     },
 };
 </script>
-<style scoped>
-#page-divider {
+<style scoped>#page-divider {
     margin-right: 0px;
     padding-right: 0;
     padding-left: 100px;
@@ -418,10 +439,10 @@ export default {
     padding-left: 5vw;
     padding-top: 5%;
 }
+
 .title {
     width: 100%;
     text-align: center;
     padding-right: 10vw;
     padding-top: 0%;
-}
-</style>
+}</style>

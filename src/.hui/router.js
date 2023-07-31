@@ -8,12 +8,8 @@ function IndexHome() {
   return import(/* webpackChunkName: "index-home" */ '@/views/index/home.vue')
 }
 
-function TestA() {
-  return import(/* webpackChunkName: "TestA" */ '@/components/TestA.vue')
-}
-
-function TestB() {
-  return import(/* webpackChunkName: "TestB" */ '@/components/TestB.vue')
+function Holding(){
+  return import(/* webpackChunkName: "FundTable" */ '@/components/Holding.vue')
 }
 
 function __404__() {
@@ -92,6 +88,12 @@ const routes = [
         name: 'Questionnaires',
         path: 'Questionnaires',
         component: Questionnaires,
+      },
+      {
+        name: 'Holding',
+        path: 'Holding',
+        component: Holding,
+
       }
     ],
   },

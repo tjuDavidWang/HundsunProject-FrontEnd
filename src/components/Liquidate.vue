@@ -1,7 +1,7 @@
 <template>
     <div class="liquidate">
 
-        <h1>清算功能示意</h1>
+        <h1>清算面板</h1>
         <br><br>
         <div class="button-row">
             <h-button type="primary" icon="time" @click="UpdateTime">更新时间</h-button>

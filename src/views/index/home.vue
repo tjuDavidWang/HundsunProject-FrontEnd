@@ -6,7 +6,6 @@
         &nbsp;&nbsp;&nbsp;&nbsp;
         <img alt="Tongji Univ" :src="tjlogo" />
       </div>
-      <hello-world class="mt20"></hello-world>
       <div class="tc">
         <h1>同济-恒生训练营3组 基金管理系统</h1>
         <br>
