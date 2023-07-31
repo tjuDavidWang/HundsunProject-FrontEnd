@@ -7,7 +7,7 @@
             <h-button type="primary" icon="time" @click="UpdateTime">更新时间</h-button>
 
             <span style="width:10em"><b>当前日期：</b></span>
-            <h-fast-date :value="CurDate" format="yyyy-MM-dd" type="date" placeholder="当前日期"></h-fast-date>
+            <h-fast-date :value="NowDate" format="yyyy-MM-dd" type="date" placeholder="当前日期"></h-fast-date>
 
             <h-button :type="type" icon="refresh" :disabled="disableUpdate" @click="UpdateValue" :loading="loading1">
                 <span v-if="!loading1">{{ text2 }}</span>
@@ -64,7 +64,8 @@ export default {
             columns: columns,
             totalNum: 0,
 
-            CurDate: "2023-07-31",
+            CurDate: "2023-07-30",
+            NowDate: "2023-07-30",
 
             text2: "更新净值",
             disableUpdate: false,
@@ -89,7 +90,8 @@ export default {
         fetchTime() {
             axios.get('http://127.0.0.1:9091/getTime')
                 .then((response) => {
-                    this.CurDate = response.data.substring(0, 10);
+                    this.NowDate = response.data.substring(0, 10);
+                    this.CurDate = this.getPreviousWorkingDay(this.NowDate);
                 })
                 .catch((error) => {
                     console.log(error);
@@ -174,20 +176,6 @@ export default {
                 });
         },
         UpdateTime() {
-            let currentDate = new Date(this.CurDate);
-            currentDate.setDate(currentDate.getDate() + 1); // add one day
-
-            let year = currentDate.getFullYear();
-            let month = ("0" + (currentDate.getMonth() + 1)).slice(-2); // months are 0-indexed in JavaScript
-            let day = ("0" + currentDate.getDate()).slice(-2);
-            this.CurDate = `${year}-${month}-${day}`;
-
-            this.disabled = true;
-            this.disableUpdate = false;
-            this.text3 = "清算";
-            this.text2 = "更新净值";
-            this.type = "primary";
-
             // 更新时间
             axios.get('http://127.0.0.1:9091/updateTime')
                 .then(() => {
@@ -196,6 +184,14 @@ export default {
                 .catch((error) => {
                     console.log(error);
                 });
+
+            this.disabled = true;
+            this.disableUpdate = false;
+            this.text3 = "清算";
+            this.text2 = "更新净值";
+            this.type = "primary";
+
+
         },
         UpdateValue() {
             this.loading1 = true;

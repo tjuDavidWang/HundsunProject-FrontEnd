@@ -1,7 +1,7 @@
 <template>
   <div class="table">
+    <h1>客户列表</h1>
     <h-table
-      class="cus-table"
       border
       stripe
       size="large"
@@ -26,99 +26,20 @@
       :visible="showModal"
       :user="selectedUser"
     ></UserInfoModal>
+
+    <UserEditModal
+      @closeEdit="closeEditModal"
+      :editVisible="showEditModal"
+      :editUser="editedUser"
+    ></UserEditModal>
   </div>
 </template>
 
 <script>
+import axios from "axios";
 import UserInfoModal from "./UserInfoModal.vue";
-import UserEditModal from "./UserEditModal.vue"
+import UserEditModal from "./UserEditModal.vue";
 
-var data = [
-  {
-    name: "张小刚1",
-    type: "个人",
-    cerType: "身份证",
-    ID: "012365478",
-    riskLevel: "低",
-  },
-  {
-    name: "张小刚2",
-    type: "个人",
-    cerType: "身份证",
-    ID: "112365478",
-    riskLevel: "低",
-  },
-  {
-    name: "张小刚3",
-    type: "个人",
-    cerType: "身份证",
-    ID: "212365478",
-    riskLevel: "低",
-  },
-  {
-    name: "张小刚4",
-    type: "个人",
-    cerType: "身份证",
-    ID: "312365478",
-    riskLevel: "低",
-  },
-  {
-    name: "张小刚5",
-    type: "个人",
-    cerType: "身份证",
-    ID: "412365478",
-    riskLevel: "低",
-  },
-  {
-    name: "张小刚6",
-    type: "个人",
-    cerType: "身份证",
-    ID: "512365478",
-    riskLevel: "低",
-  },
-  {
-    name: "张小刚7",
-    type: "个人",
-    cerType: "身份证",
-    ID: "612365478",
-    riskLevel: "低",
-  },
-  {
-    name: "张小刚8",
-    type: "个人",
-    cerType: "身份证",
-    ID: "712365478",
-    riskLevel: "低",
-  },
-  {
-    name: "张小刚9",
-    type: "个人",
-    cerType: "身份证",
-    ID: "812365478",
-    riskLevel: "低",
-  },
-  {
-    name: "张小刚10",
-    type: "个人",
-    cerType: "身份证",
-    ID: "912365478",
-    riskLevel: "低",
-  },
-  {
-    name: "张小刚11",
-    type: "个人",
-    cerType: "身份证",
-    ID: "1012365478",
-    riskLevel: "低",
-  },
-  {
-    name: "张小刚12",
-    type: "个人",
-    cerType: "身份证",
-    ID: "1112365478",
-    riskLevel: "低",
-  },
-];
 export default {
   name: "CustomerTable",
   components: {
@@ -127,7 +48,7 @@ export default {
   },
   data() {
     return {
-      tData: data.slice(0, 5),
+      tData: [],
       columns: [
         {
           title: "姓名",
@@ -180,6 +101,12 @@ export default {
                     type: "confirm",
                     size: "small",
                   },
+                  on: {
+                    click: () => {
+                      console.log(user);
+                      this.editUser(user);
+                    },
+                  },
                 },
                 "编辑"
               ),
@@ -204,9 +131,11 @@ export default {
           },
         },
       ],
-      totalNum: data.length,
+      totalNum: 0,
       showModal: false,
+      showEditModal: false,
       selectedUser: {},
+      editedUser: {},
       curPage: 1,
     };
   },
@@ -222,31 +151,97 @@ export default {
     viewUser(user) {
       console.log(user);
       this.showModal = true;
-      this.selectedUser = user;
+      const customer = this.tData.find((item) => item.ID === user.ID);
+      this.selectedUser = customer;
+    },
+    editUser(user) {
+      console.log(user);
+      this.showEditModal = true;
+      this.editedUser = user;
     },
     closeModal() {
       console.log("123");
       this.showModal = false;
     },
-    handleDelete(user) {
-      data.forEach((item, index) => {
-        if (item.ID === user.ID) {
-          data.splice(index, 1);
-        }
-      });
-      this.totalNum = this.totalNum - 1;
-      this.tData = data.slice((this.curPage - 1) * 5, this.curPage * 5);
+    closeEditModal() {
+      this.showEditModal = false;
     },
+    handleDelete(user) {
+      this.deleteCus(user.ID);
+      this.totalNum = this.totalNum - 1;
+      this.tData = this.tData.slice((this.curPage - 1) * 5, this.curPage * 5);
+    },
+    fetehData() {
+      return new Promise((resolve, reject) => {
+        let d = {};
+        axios
+          .get("http://127.0.0.1:9091/getInvester/all")
+          .then((response) => {
+            response.data.forEach((item) => {
+              d.name = item.userName;
+              d.type = item.userType;
+              d.ID = item.cerNumber;
+              d.cerType = item.cerType;
+              d.riskLevel = item.riskGrade;
+              this.tData.push(d);
+              d = {};
+              this.totalNum++;
+            });
+            resolve();
+          })
+          .catch((error) => {
+            console.error(error);
+            reject(error);
+          });
+      });
+    },
+    async fetehCard(item) {
+      try {
+        const response = await axios.get(
+          "http://127.0.0.1:9091/getBankCard/all",
+          {
+            params: { cer_number: item.ID },
+          }
+        );
+        item.cardNumber = response.data.length;
+        item.card = response.data;
+      } catch (error) {
+        console.error(error);
+      }
+    },
+    deleteCus(id) {
+      axios
+        .delete("http://127.0.0.1:9091/deleteInvester", {
+          params: { cer_number: id },
+        })
+        .then(() => {
+          this.tData = this.tData.filter((item) => item.ID !== id);
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    },
+  },
+  async created() {
+    await this.fetehData();
+    for (const item of this.tData) {
+      await this.fetehCard(item);
+    }
+    console.log(this.tData);
   },
 };
 </script>
 
 <style>
-.cus-table {
-  margin-bottom: 2%;
+.table {
+  width: 80vw;
+  padding: 3% 5%;
+  text-align: center;
+  height: 100vh;
 }
 
 .cus-page-button {
   float: right;
+  margin: 1vw;
 }
 </style>
