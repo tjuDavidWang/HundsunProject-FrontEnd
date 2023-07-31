@@ -1,5 +1,7 @@
 # HundsunProject-FrontEnd
-恒生暑期专业实习项目，采用vue3和HUI搭建基金交易平台
+Hundsun Summer Professional Internship Program with Vue and HUI to build a fund trading platform.
+
+![image](https://github.com/tjuDavidWang/HundsunProject-FrontEnd/blob/main/img/homepage.png)
 
 ## Project setup
 
@@ -24,16 +26,15 @@ hui dev
 ### Compiles and minifies for production
 
 ```bash
-npm run build
-```
-
-### Lints and fixes files
-
-```bash
-npm run lint
+hui build
 ```
 
 ### Customize configuration
 
 See [Configuration Reference](https://cli.vuejs.org/config/) and [HUI tutorial](https://hui.hs.net/r/cms/www/itn/hui-open/).
 
+## BackEnd
+
+https://github.com/CLancet/HengshengBackend
+
+By SpringBoot and JRES.
