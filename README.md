@@ -3,6 +3,8 @@ Hundsun Summer Professional Internship Program with Vue and HUI to build a fund 
 
 ![image](img\homepage.png)
 
+![FundList](https://github.com/tjuDavidWang/HundsunProject-FrontEnd/tree/main/img/fundlist.png)
+
 ## Project setup
 
 ### Installation of HUI scaffolding
