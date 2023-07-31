@@ -5,23 +5,56 @@
     <div class="search-container">
       <h-form>
         <h-form-item class="search" prop="key">
-          <h-input v-model="keyValue" placeholder="请输入关键字" style="width: 10vw">
+          <h-input
+            v-model="keyValue"
+            placeholder="请输入关键字"
+            style="width: 10vw"
+          >
           </h-input>
-          <h-button @click="searchCus" type="primary" shape="circle" icon="search">搜索</h-button>
+          <h-button
+            @click="searchCus"
+            type="primary"
+            shape="circle"
+            icon="search"
+            >搜索</h-button
+          >
         </h-form-item>
       </h-form>
     </div>
     <div class="cus-table">
-      <h-table border stripe size="large" headAlgin="center" bodyAlgin="center" :data="tData"
-        :columns="columns"></h-table>
+      <h-table
+        border
+        stripe
+        size="large"
+        headAlgin="center"
+        bodyAlgin="center"
+        :data="tData"
+        :columns="columns"
+      ></h-table>
     </div>
 
-    <h-page class="cus-page-button" size="small" :total="totalNum" @on-change="dataChange" show-elevator show-total
-      fastArrival page-size="10"></h-page>
+    <h-page
+      class="cus-page-button"
+      size="small"
+      :total="totalNum"
+      @on-change="dataChange"
+      show-elevator
+      show-total
+      fastArrival
+      page-size="10"
+    ></h-page>
 
-    <UserInfoModal @close="closeModal" :visible="showModal" :user="selectedUser"></UserInfoModal>
+    <UserInfoModal
+      @close="closeModal"
+      :visible="showModal"
+      :user="selectedUser"
+    ></UserInfoModal>
 
-    <UserEditModal @closeEdit="closeEditModal" :editVisible="showEditModal" :editUser="editedUser"></UserEditModal>
+    <UserEditModal
+      @closeEdit="closeEditModal"
+      :editVisible="showEditModal"
+      :editUser="editedUser"
+    ></UserEditModal>
   </div>
 </template>
 
@@ -134,16 +167,27 @@ export default {
     async searchCus() {
       if (this.keyValue === "") {
         await this.fetehData();
+        for (const item of this.tData) {
+          await this.fetehCard(item);
+          console.log(this.tData, 12345);
+        }
       } else {
         this.tData = [];
         let d = {};
         this.totalNum = 0;
 
-        const response1 = axios.get(`http://127.0.0.1:9091/search/invester/name?key=${this.keyValue}`);
-        const response2 = axios.get(`http://127.0.0.1:9091/search/invester/number?key=${this.keyValue}`);
+        const response1 = axios.get(
+          `http://127.0.0.1:9091/search/invester/name?key=${this.keyValue}`
+        );
+        const response2 = axios.get(
+          `http://127.0.0.1:9091/search/invester/number?key=${this.keyValue}`
+        );
 
         try {
-          const [response1Data, response2Data] = await Promise.all([response1, response2]);
+          const [response1Data, response2Data] = await Promise.all([
+            response1,
+            response2,
+          ]);
 
           response1Data.data.forEach((item) => {
             d.name = item.userName;
