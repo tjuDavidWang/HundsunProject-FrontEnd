@@ -3,80 +3,42 @@
     <div>
       <h-form ref="invester" :model="invester" :label-width="100" inline>
         <h-form-item label="投资人名称">
-          <h-input
-            v-model="invester.user_name"
-            size="large"
-            style="width: 25vw"
-          ></h-input>
+          <h-input v-model="invester.user_name" size="large" style="width: 25vw"></h-input>
         </h-form-item>
         <h-form-item prop="user_type" label="投资人类型">
           <h-select v-model="invester.user_type" style="width: 25vw">
-            <h-option
-              v-for="item in investor_type"
-              :value="item.value"
-              :key="item.value"
-              >{{ item.value }}</h-option
-            >
+            <h-option v-for="item in investor_type" :value="item.value" :key="item.value">{{ item.value }}</h-option>
           </h-select>
         </h-form-item>
         <h-form-item prop="cer_type" label="投资人证件类型">
           <h-select v-model="invester.cer_type" style="width: 25vw">
-            <h-option
-              v-for="item in certificate_type"
-              :value="item.value"
-              :key="item.value"
-              >{{ item.value }}</h-option
-            >
+            <h-option v-for="item in certificate_type" :value="item.value" :key="item.value">{{ item.value }}</h-option>
           </h-select>
         </h-form-item>
         <h-form-item label="证件号码">
-          <h-input
-            v-model="invester.cer_number"
-            size="large"
-            style="width: 25vw"
-          ></h-input>
+          <h-input v-model="invester.cer_number" size="large" style="width: 25vw"></h-input>
         </h-form-item>
       </h-form>
       <h-form ref="bank_card" :label-width="100" inline>
         <h-form-item label="银行卡张数">
-          <h-input
-            v-model="invester.bank_num"
-            size="large"
-            style="width: 6vw"
-          ></h-input>
+          <h-input v-model="invester.bank_num" size="large" style="width: 6vw"></h-input>
         </h-form-item>
         <div v-for="(bankCard, index) in filteredBankCards" :key="index">
           <template v-if="Number(invester.bank_num) <= 5">
             <h-form-item label="银行选择">
               <h-select v-model="bankCard.bank_name" style="width: 25vw">
-                <h-option
-                  v-for="item in bank_List"
-                  :value="item.value"
-                  :key="item.value"
-                  >{{ item.value }}</h-option
-                >
+                <h-option v-for="item in bank_List" :value="item.value" :key="item.value">{{ item.value }}</h-option>
               </h-select>
             </h-form-item>
             <h-form-item label="银行卡号">
-              <h-input
-                v-model="bankCard.card_id"
-                size="large"
-                style="width: 25vw"
-              ></h-input> </h-form-item
-          ></template>
+              <h-input v-model="bankCard.card_id" size="large" style="width: 25vw"></h-input> </h-form-item></template>
         </div>
         <div>
-          <router-link to="/Questionnaires">
-            <h-form-item
-              v-if="
-                Number(invester.bank_num) > 0 && Number(invester.bank_num) <= 5
-              "
-            >
-              <h-button @click="addCard" class="next" type="primary"
-                >下一步</h-button
-              >
-            </h-form-item>
-          </router-link>
+          <router-link :to="{ name: 'Questionnaires', params: invester }">
+          <h-form-item v-if="Number(invester.bank_num) > 0 && Number(invester.bank_num) <= 5">
+            <h-button @click="addCard" class="next" type="primary">下一步</h-button>
+          </h-form-item>
+        </router-link>
         </div>
       </h-form>
     </div>
@@ -191,8 +153,7 @@ export default {
       this.invester.formDynamic.bank_card.forEach((item) => {
         axios
           .post(
-            `http://127.0.0.1:9091/addBankCard?cer_number=${
-              this.invester.cer_number
+            `http://127.0.0.1:9091/addBankCard?cer_number=${this.invester.cer_number
             }&card_number=${item.card_id}&bank_name=${encodeURIComponent(
               item.bank_name
             )}&balance=100.0`
@@ -204,6 +165,16 @@ export default {
             console.error(error);
           });
       });
+    },
+    nextStep() {
+      const query = {
+        user_name: this.invester.user_name,
+        user_type: this.invester.user_type,
+        cer_type: this.invester.cer_type,
+        cer_number: this.invester.cer_number,
+        bank_num: this.invester.bank_num
+      };
+      this.$router.push({ path: "/Questionnaires", query });
     },
   },
 };

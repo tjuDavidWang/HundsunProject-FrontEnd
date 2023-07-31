@@ -91,7 +91,7 @@ export default {
             axios.get('http://127.0.0.1:9091/getTime')
                 .then((response) => {
                     this.NowDate = response.data.substring(0, 10);
-                    this.CurDate=this.getPreviousWorkingDay(this.NowDate);
+                    this.CurDate = this.getPreviousWorkingDay(this.NowDate);
                 })
                 .catch((error) => {
                     console.log(error);
