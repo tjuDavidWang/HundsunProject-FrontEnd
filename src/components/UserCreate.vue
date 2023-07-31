@@ -34,11 +34,10 @@
               <h-input v-model="bankCard.card_id" size="large" style="width: 25vw"></h-input> </h-form-item></template>
         </div>
         <div>
-          <router-link :to="{ name: 'Questionnaires', params: invester }">
+          <!--改用编程式导航-->
           <h-form-item v-if="Number(invester.bank_num) > 0 && Number(invester.bank_num) <= 5">
-            <h-button @click="addCard" class="next" type="primary">下一步</h-button>
+            <h-button @click="nextStep" class="next" type="primary">下一步</h-button>
           </h-form-item>
-        </router-link>
         </div>
       </h-form>
     </div>
@@ -167,6 +166,7 @@ export default {
       });
     },
     nextStep() {
+      this.addCard();
       const query = {
         user_name: this.invester.user_name,
         user_type: this.invester.user_type,

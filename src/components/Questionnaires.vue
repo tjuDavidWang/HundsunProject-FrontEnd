@@ -118,7 +118,7 @@ export default {
     },
   },
   created() {
-    this.investorInfo = this.$route.params;
+    this.investorInfo = this.$route.query;
   }
 };
 </script>
